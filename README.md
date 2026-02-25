@@ -95,39 +95,25 @@ Scenarios are pre-configured, ready-to-use Terraform modules that wrap the base 
 
 See the [scenarios README](./scenarios/README.md) for detailed comparisons, autoscaling policy examples, and migration guides.
 
-## Requirements
+## Terraform Documentation
 
-| Name | Version |
-|------|---------|
-| terraform | >= 1.10.0 |
-| aws | ~> 6.0 |
-| ignition | ~> 2.1 |
+For detailed inputs, outputs, resources, and requirements, see the documentation for each submodule:
 
-## Inputs
+### Scenarios
 
-All scenarios share these common variables:
+| Scenario | Documentation |
+|----------|---------------|
+| docker | [scenarios/docker/README.md](./scenarios/docker/README.md) |
+| podman-rootful | [scenarios/podman-rootful/README.md](./scenarios/podman-rootful/README.md) |
+| podman-rootless | [scenarios/podman-rootless/README.md](./scenarios/podman-rootless/README.md) |
 
-| Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:--------:|
-| `runner_name` | Name prefix for the GitLab Runner and all AWS resources | `string` | — | yes |
-| `gitlab_url` | GitLab instance URL | `string` | — | yes |
-| `gitlab_runner_token` | GitLab Runner authentication token | `string` | — | yes |
-| `vpc_id` | VPC ID where infrastructure will be deployed | `string` | — | yes |
-| `vpc_subnet_ids` | List of subnet IDs for the manager and executor instances | `list(string)` | — | yes |
-| `architecture` | CPU architecture for executor instances (`arm64` or `x86_64`) | `string` | `"arm64"` | no |
-| `concurrent_jobs` | Maximum number of concurrent jobs | `number` | `4` | no |
-| `capacity_per_instance` | Number of jobs each instance handles concurrently | `number` | `1` | no |
-| `max_instances` | Maximum number of EC2 executor instances | `number` | `5` | no |
-| `instance_types` | EC2 instance types (auto-discovered if not set) | `list(string)` | `null` | no |
-| `privileged_mode` | Enable Docker privileged mode (docker/podman-rootful only) | `bool` | `true` | no |
-| `autoscaler_policy` | Autoscaler idle policy configuration | `list(object)` | Scale to zero after 5m | no |
-| `kms_key_id` | KMS key ID for Secrets Manager encryption | `string` | `null` | no |
-| `gitlab_runner_image` | Custom manager container image (see [Manager Image](#manager-image)) | `string` | `null` | no |
-| `os_auto_updates` | Fedora CoreOS auto-update (Zincati) configuration | `object` | Immediate updates enabled | no |
-| `docker_credential_helpers` | Docker registry credential helpers (`credHelpers` in `config.json`) | `map(string)` | `{}` | no |
-| `tags` | Tags applied to all resources | `map(string)` | `{}` | no |
+### Modules
 
-See individual scenario READMEs for the full variable reference.
+| Module | Documentation |
+|--------|---------------|
+| manager | [modules/manager/README.md](./modules/manager/README.md) |
+| instance | [modules/instance/README.md](./modules/instance/README.md) |
+| ignition | [modules/ignition/README.md](./modules/ignition/README.md) |
 
 ### Docker Credential Helpers
 
@@ -147,14 +133,6 @@ module "gitlab_runner" {
 ```
 
 This writes the map as `credHelpers` in the manager's `/root/.docker/config.json`.
-
-## Outputs
-
-| Name | Description |
-|------|-------------|
-| `manager_security_group_id` | Security group ID of the ECS Fargate manager |
-| `instance_security_group_id` | Security group ID of the EC2 executor instances |
-| `public_ssh_key` | Public SSH key for accessing runner instances |
 
 ## Cost Optimization
 
@@ -193,27 +171,4 @@ See [CONTRIBUTING.md](./CONTRIBUTING.md).
 See [LICENSE](./LICENSE).
 
 <!-- BEGIN_TF_DOCS -->
-## Requirements
-
-No requirements.
-
-## Providers
-
-No providers.
-
-## Modules
-
-No modules.
-
-## Resources
-
-No resources.
-
-## Inputs
-
-No inputs.
-
-## Outputs
-
-No outputs.
 <!-- END_TF_DOCS -->
