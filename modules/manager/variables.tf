@@ -69,7 +69,7 @@ variable "gitlab_runner_token" {
 variable "gitlab_runner_image" {
   type        = string
   description = "Container image for the GitLab Runner manager (should be pinned to a specific version or digest)"
-  default     = "schubergphilis/gitlab-runner-autoscaler:v1.0.0-alpine"
+  default     = "schubergphilis/gitlab-runner-autoscaler:alpine"
 }
 
 variable "kms_key_id" {
