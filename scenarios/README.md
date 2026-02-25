@@ -148,37 +148,37 @@ terraform apply
 All three scenarios use the same underlying architecture:
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                         AWS VPC                              │
-│                                                               │
-│  ┌────────────────────────────────────────────────────────┐ │
-│  │ ECS Fargate (Manager)                                  │ │
-│  │ ┌────────────────────────────────────────────┐        │ │
-│  │ │ gitlab-runner-autoscaler                   │        │ │
-│  │ │ - Manages job queue                         │        │ │
-│  │ │ - Scales EC2 instances                      │        │ │
-│  │ │ - Monitors autoscaler policy                │        │ │
-│  │ └────────────────────────────────────────────┘        │ │
-│  └────────────────────────────────────────────────────────┘ │
-│                           ▼                                   │
-│  ┌────────────────────────────────────────────────────────┐ │
-│  │ Auto Scaling Group (Executors)                         │ │
-│  │                                                         │ │
-│  │  ┌──────────┐  ┌──────────┐  ┌──────────┐           │ │
-│  │  │ EC2 Spot │  │ EC2 Spot │  │ EC2 Spot │  ...      │ │
-│  │  │ ARM64    │  │ ARM64    │  │ ARM64    │           │ │
-│  │  │ Fedora   │  │ Fedora   │  │ Fedora   │           │ │
-│  │  │ CoreOS   │  │ CoreOS   │  │ CoreOS   │           │ │
-│  │  │          │  │          │  │          │           │ │
-│  │  │ Podman   │  │ Podman   │  │ Podman   │           │ │
-│  │  │ rootful/ │  │ rootful/ │  │ rootful/ │           │ │
-│  │  │ rootless │  │ rootless │  │ rootless │           │ │
-│  │  └──────────┘  └──────────┘  └──────────┘           │ │
-│  │                                                         │ │
-│  │  Scales: 0 → max_instances based on job demand        │ │
-│  └────────────────────────────────────────────────────────┘ │
-│                                                               │
-└─────────────────────────────────────────────────────────────┘
+┌───────────────────────────────────────────────────────────┐
+│ AWS VPC                                                   │
+│                                                           │
+│ ┌───────────────────────────────────────────────────────┐ │
+│ │ ECS Fargate (Manager)                                 │ │
+│ │ ┌────────────────────────────────────────────┐        │ │
+│ │ │ gitlab-runner-autoscaler                   │        │ │
+│ │ │ - Manages job queue                        │        │ │
+│ │ │ - Scales EC2 instances                     │        │ │
+│ │ │ - Monitors autoscaler policy               │        │ │
+│ │ └────────────────────────────────────────────┘        │ │
+│ └───────────────────────────────────────────────────────┘ │
+│                           ▼                               │
+│ ┌───────────────────────────────────────────────────────┐ │
+│ │ Auto Scaling Group (Executors)                        │ │
+│ │                                                       │ │
+│ │  ┌──────────┐  ┌──────────┐  ┌──────────┐             │ │
+│ │  │ EC2 Spot │  │ EC2 Spot │  │ EC2 Spot │  ...        │ │
+│ │  │ ARM64    │  │ ARM64    │  │ ARM64    │             │ │
+│ │  │ Fedora   │  │ Fedora   │  │ Fedora   │             │ │
+│ │  │ CoreOS   │  │ CoreOS   │  │ CoreOS   │             │ │
+│ │  │          │  │          │  │          │             │ │
+│ │  │ Podman   │  │ Podman   │  │ Podman   │             │ │
+│ │  │ rootful/ │  │ rootful/ │  │ rootful/ │             │ │
+│ │  │ rootless │  │ rootless │  │ rootless │             │ │
+│ │  └──────────┘  └──────────┘  └──────────┘             │ │
+│ │                                                       │ │
+│ │  Scales: 0 → max_instances based on job demand        │ │
+│ └───────────────────────────────────────────────────────┘ │
+│                                                           │
+└───────────────────────────────────────────────────────────┘
 ```
 
 The **only difference** between scenarios is the Podman configuration:

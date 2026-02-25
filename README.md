@@ -5,36 +5,36 @@ Terraform module for deploying auto-scaling [GitLab Runner](https://docs.gitlab.
 ## Architecture
 
 ```
-                          ┌──────────────────────────────────┐
-                          │          AWS VPC                  │
-                          │                                    │
-                          │  ┌──────────────────────────────┐ │
-                          │  │ ECS Fargate (Manager)         │ │
-                          │  │                                │ │
-  GitLab ◄── polling ───► │  │  gitlab-runner-autoscaler     │ │
-                          │  │  - Polls for pending jobs      │ │
-                          │  │  - Scales EC2 instances        │ │
-                          │  │  - Connects via SSH             │ │
-                          │  └──────────────┬─────────────────┘ │
-                          │                 │ SSH                 │
-                          │  ┌──────────────▼─────────────────┐ │
-                          │  │ Auto Scaling Group (Executors)  │ │
-                          │  │                                  │ │
-                          │  │  ┌──────────┐  ┌──────────┐    │ │
-                          │  │  │ EC2 Spot │  │ EC2 Spot │ …  │ │
-                          │  │  │ Fedora   │  │ Fedora   │    │ │
-                          │  │  │ CoreOS   │  │ CoreOS   │    │ │
-                          │  │  │ Podman   │  │ Podman   │    │ │
-                          │  │  └──────────┘  └──────────┘    │ │
-                          │  │                                  │ │
-                          │  │  Scales 0 → N based on demand   │ │
-                          │  └──────────────────────────────────┘ │
+                          ┌────────────────────────────────────────┐
+                          │ AWS VPC                                │
                           │                                        │
-                          │  ┌──────────────────────────────────┐ │
-                          │  │ AWS Secrets Manager               │ │
-                          │  │  - Runner config (TOML as JSON)   │ │
-                          │  │  - SSH private key                 │ │
-                          │  └──────────────────────────────────┘ │
+                          │ ┌────────────────────────────────────┐ │
+                          │ │ ECS Fargate (Manager)              │ │
+                          │ │                                    │ │
+  GitLab ◄── polling ───► │ │  gitlab-runner-autoscaler          │ │
+                          │ │  - Polls for pending jobs          │ │
+                          │ │  - Scales EC2 instances            │ │
+                          │ │  - Connects via SSH                │ │
+                          │ └──────────────────┬─────────────────┘ │
+                          │                    │ SSH               │
+                          │ ┌──────────────────▼─────────────────┐ │
+                          │ │ Auto Scaling Group (Executors)     │ │
+                          │ │                                    │ │
+                          │ │  ┌──────────┐  ┌──────────┐        │ │
+                          │ │  │ EC2 Spot │  │ EC2 Spot │ …      │ │
+                          │ │  │ Fedora   │  │ Fedora   │        │ │
+                          │ │  │ CoreOS   │  │ CoreOS   │        │ │
+                          │ │  │ Podman   │  │ Podman   │        │ │
+                          │ │  └──────────┘  └──────────┘        │ │
+                          │ │                                    │ │
+                          │ │  Scales 0 → N based on demand      │ │
+                          │ └────────────────────────────────────┘ │
+                          │                                        │
+                          │ ┌────────────────────────────────────┐ │
+                          │ │ AWS Secrets Manager                │ │
+                          │ │  - Runner config (TOML as JSON)    │ │
+                          │ │  - SSH private key                 │ │
+                          │ └────────────────────────────────────┘ │
                           └────────────────────────────────────────┘
 ```
 
