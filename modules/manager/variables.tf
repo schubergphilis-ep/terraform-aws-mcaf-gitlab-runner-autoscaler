@@ -60,16 +60,16 @@ variable "gitlab_runner_config" {
   description = "GitLab Runner configuration for Docker Autoscaler"
 }
 
-variable "gitlab_runner_token" {
-  type        = string
-  description = "GitLab Runner authentication token"
-  sensitive   = true
-}
-
 variable "gitlab_runner_image" {
   type        = string
   description = "Container image for the GitLab Runner manager (should be pinned to a specific version or digest)"
   default     = "schubergphilis/gitlab-runner-autoscaler:alpine"
+}
+
+variable "gitlab_runner_token" {
+  type        = string
+  description = "GitLab Runner authentication token"
+  sensitive   = true
 }
 
 variable "kms_key_id" {

@@ -1,9 +1,3 @@
-variable "docker_credential_helpers" {
-  type        = map(string)
-  description = "Map of Docker registry hostnames to credential helper names, written to the manager's /root/.docker/config.json as credHelpers"
-  default     = {}
-}
-
 variable "architecture" {
   type        = string
   description = "CPU architecture for GitLab Runner (arm64 or x86_64)"
@@ -52,6 +46,12 @@ variable "concurrent_jobs" {
     condition     = var.concurrent_jobs >= 1
     error_message = "Concurrent jobs must be at least 1."
   }
+}
+
+variable "docker_credential_helpers" {
+  type        = map(string)
+  description = "Map of Docker registry hostnames to credential helper names, written to the manager's /root/.docker/config.json as credHelpers"
+  default     = {}
 }
 
 variable "ebs_volume_size" {

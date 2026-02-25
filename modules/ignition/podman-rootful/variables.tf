@@ -1,8 +1,3 @@
-variable "ssh_authorized_key" {
-  type        = string
-  description = "SSH public key to authorize for root user access. Required for GitLab Runner autoscaler to connect as root."
-}
-
 variable "os_auto_updates" {
   type = object({
     enabled  = optional(bool, true)
@@ -15,4 +10,9 @@ variable "os_auto_updates" {
   })
   description = "OS auto-updater (Zincati) configuration for Fedora CoreOS instances"
   default     = {}
+}
+
+variable "ssh_authorized_key" {
+  type        = string
+  description = "SSH public key to authorize for root user access. Required for GitLab Runner autoscaler to connect as root."
 }

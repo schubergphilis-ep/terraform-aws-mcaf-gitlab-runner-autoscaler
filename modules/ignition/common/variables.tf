@@ -1,7 +1,7 @@
-variable "container_storage_path" {
+variable "container_storage_group" {
   type        = string
-  description = "Mount path for container storage (e.g., /var/lib/containers or /var/lib/docker)"
-  default     = "/var/lib/containers"
+  description = "Owner group for the container storage directory (e.g., root or core)"
+  default     = "root"
 }
 
 variable "container_storage_label" {
@@ -10,22 +10,22 @@ variable "container_storage_label" {
   default     = "containers"
 }
 
+variable "container_storage_mode" {
+  type        = string
+  description = "Permission mode for the container storage directory (e.g., 0755)"
+  default     = "0755"
+}
+
 variable "container_storage_owner" {
   type        = string
   description = "Owner user for the container storage directory (e.g., root or core)"
   default     = "root"
 }
 
-variable "container_storage_group" {
+variable "container_storage_path" {
   type        = string
-  description = "Owner group for the container storage directory (e.g., root or core)"
-  default     = "root"
-}
-
-variable "container_storage_mode" {
-  type        = string
-  description = "Permission mode for the container storage directory (e.g., 0755)"
-  default     = "0755"
+  description = "Mount path for container storage (e.g., /var/lib/containers or /var/lib/docker)"
+  default     = "/var/lib/containers"
 }
 
 variable "os_auto_updates" {

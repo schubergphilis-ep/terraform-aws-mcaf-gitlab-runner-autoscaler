@@ -1,5 +1,3 @@
-data "aws_region" "current" {}
-
 locals {
   updated_runners = merge(var.gitlab_runner_config, {
     runners = [merge(var.gitlab_runner_config.runners, {
@@ -11,6 +9,38 @@ locals {
       })
     })]
   })
+}
+
+resource "tls_private_key" "default" {
+  algorithm = "ED25519"
+}
+
+resource "aws_secretsmanager_secret" "config" {
+  #checkov:skip=CKV2_AWS_57:GitLab Runner config is rotated manually via CONFIG_HASH environment variable trigger, not via automatic rotation
+
+  name_prefix = var.gitlab_runner_config.runners.name
+  kms_key_id  = var.kms_key_id
+
+  tags = var.tags
+}
+
+resource "aws_secretsmanager_secret_version" "config" {
+  secret_id     = aws_secretsmanager_secret.config.id
+  secret_string = jsonencode(local.updated_runners)
+}
+
+resource "aws_secretsmanager_secret" "ssh_key" {
+  #checkov:skip=CKV2_AWS_57:SSH private keys cannot use automatic rotation as it would break instance connectivity; keys are rotated through infrastructure redeployment
+
+  name_prefix = var.gitlab_runner_config.runners.name
+  kms_key_id  = var.kms_key_id
+
+  tags = var.tags
+}
+
+resource "aws_secretsmanager_secret_version" "ssh_key" {
+  secret_id     = aws_secretsmanager_secret.ssh_key.id
+  secret_string = trimspace(tls_private_key.default.private_key_openssh)
 }
 
 data "aws_iam_policy_document" "task_execution_role" {
@@ -59,37 +89,6 @@ data "aws_iam_policy_document" "task_execution_role" {
     ]
     resources = ["*"]
   }
-}
-
-resource "aws_secretsmanager_secret" "config" {
-  #checkov:skip=CKV2_AWS_57:GitLab Runner config is rotated manually via CONFIG_HASH environment variable trigger, not via automatic rotation
-
-  name_prefix = var.gitlab_runner_config.runners.name
-  kms_key_id  = var.kms_key_id
-
-  tags = var.tags
-}
-
-resource "aws_secretsmanager_secret_version" "config" {
-  secret_id     = aws_secretsmanager_secret.config.id
-  secret_string = jsonencode(local.updated_runners)
-}
-
-resource "aws_secretsmanager_secret" "ssh_key" {
-  #checkov:skip=CKV2_AWS_57:SSH private keys cannot use automatic rotation as it would break instance connectivity; keys are rotated through infrastructure redeployment
-
-  name_prefix = var.gitlab_runner_config.runners.name
-  kms_key_id  = var.kms_key_id
-
-  tags = var.tags
-}
-resource "aws_secretsmanager_secret_version" "ssh_key" {
-  secret_id     = aws_secretsmanager_secret.ssh_key.id
-  secret_string = trimspace(tls_private_key.default.private_key_openssh)
-}
-
-resource "tls_private_key" "default" {
-  algorithm = "ED25519"
 }
 
 module "runner_manager" {
