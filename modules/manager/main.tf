@@ -103,11 +103,16 @@ module "runner_manager" {
   architecture   = "arm64" # Manager always runs on ARM64 for cost optimization
   command        = var.gitlab_runner_command
   ecs_subnet_ids = var.vpc_subnet_ids
-  environment = {
-    CONFIG_HASH               = md5(jsonencode(local.updated_runners))
-    GITLAB_CONFIG_SECRET_NAME = aws_secretsmanager_secret.config.name
-    SSH_KEY_SECRET_NAME       = aws_secretsmanager_secret.ssh_key.name
-  }
+  environment = merge(
+    {
+      CONFIG_HASH               = md5(jsonencode(local.updated_runners))
+      GITLAB_CONFIG_SECRET_NAME = aws_secretsmanager_secret.config.name
+      SSH_KEY_SECRET_NAME       = aws_secretsmanager_secret.ssh_key.name
+    },
+    length(var.docker_credential_helpers) > 0 ? {
+      DOCKER_CREDENTIAL_HELPERS = jsonencode(var.docker_credential_helpers)
+    } : {}
+  )
   image                    = var.gitlab_runner_image
   public_ip                = false
   readonly_root_filesystem = false

@@ -11,7 +11,7 @@ This scenario deploys a GitLab Runner with **rootless Podman** as the container 
 
 ## Architecture
 
-- **Manager**: ECS Fargate task running gitlab-runner-autoscaler
+- **Manager**: ECS Fargate task running a [custom wrapper image](https://github.com/schubergphilis-ep/gitlab-runner-autoscaler-image) around `gitlab/gitlab-runner`. You can provide your own image via `gitlab_runner_image`
 - **Executors**: EC2 ARM64 instances (Fedora CoreOS) with rootless Podman
 - **Socket**: `/run/user/1000/podman/podman.sock` (rootless)
 - **User**: `core` (UID 1000)
@@ -110,6 +110,7 @@ module "gitlab_runner" {
 | capacity_per_instance | Jobs per instance | `number` | `1` | no |
 | max_instances | Maximum number of instances | `number` | `5` | no |
 | autoscaler_policy | Autoscaler idle policy configuration | `list(object)` | See below | no |
+| docker_credential_helpers | Map of registry hostnames to credential helper names | `map(string)` | `{}` | no |
 | tags | Tags to apply to all resources | `map(string)` | `{}` | no |
 
 ### Default Autoscaler Policy
@@ -234,6 +235,7 @@ Migrating from rootful to rootless requires updating CI/CD pipelines:
 
 ## References
 
+- [GitLab Runner Autoscaler](https://docs.gitlab.com/runner/runner_autoscale/gitlab-runner-autoscaler/) — Official documentation on autoscaling architecture, configuration, and supported platforms
+- [Manager wrapper image](https://github.com/schubergphilis-ep/gitlab-runner-autoscaler-image) — Custom Docker image with AWS integration used by the manager
 - [Podman Rootless Documentation](https://github.com/containers/podman/blob/main/docs/tutorials/rootless_tutorial.md)
 - [Kaniko Documentation](https://github.com/GoogleContainerTools/kaniko)
-- [GitLab Runner Autoscaler](https://docs.gitlab.com/runner/executors/docker_autoscaler.html)

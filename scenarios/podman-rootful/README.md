@@ -11,7 +11,7 @@ This scenario deploys a GitLab Runner with **rootful Podman** as the container r
 
 ## Architecture
 
-- **Manager**: ECS Fargate task running gitlab-runner-autoscaler
+- **Manager**: ECS Fargate task running a [custom wrapper image](https://github.com/schubergphilis-ep/gitlab-runner-autoscaler-image) around `gitlab/gitlab-runner`. You can provide your own image via `gitlab_runner_image`
 - **Executors**: EC2 ARM64 instances (Fedora CoreOS) with rootful Podman
 - **Socket**: `/run/podman/podman.sock` (rootful)
 - **User**: `root`
@@ -129,6 +129,7 @@ output "ssh_key" {
 | max_instances | Maximum number of instances | `number` | `5` | no |
 | privileged_mode | Enable Docker privileged mode | `bool` | `true` | no |
 | autoscaler_policy | Autoscaler idle policy configuration | `list(object)` | See below | no |
+| docker_credential_helpers | Map of registry hostnames to credential helper names | `map(string)` | `{}` | no |
 | instance_types | List of instance types (dynamically discovered from AWS if not specified) | `list(string)` | `null` | no |
 | tags | Tags to apply to all resources | `map(string)` | `{}` | no |
 
@@ -229,3 +230,8 @@ module "gitlab_runner" {
 ## Related Scenarios
 
 - [podman-rootless](../podman-rootless/README.md): Enhanced security with rootless Podman
+
+## References
+
+- [GitLab Runner Autoscaler](https://docs.gitlab.com/runner/runner_autoscale/gitlab-runner-autoscaler/) — Official documentation on autoscaling architecture, configuration, and supported platforms
+- [Manager wrapper image](https://github.com/schubergphilis-ep/gitlab-runner-autoscaler-image) — Custom Docker image with AWS integration used by the manager

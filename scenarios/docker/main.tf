@@ -28,13 +28,14 @@ locals {
 module "manager" {
   source = "../../modules/manager"
 
-  gitlab_runner_config = local.gitlab_runner_config
-  gitlab_runner_image  = var.gitlab_runner_image
-  gitlab_runner_token  = var.gitlab_runner_token
-  kms_key_id           = var.kms_key_id
-  vpc_id               = var.vpc_id
-  vpc_subnet_ids       = var.vpc_subnet_ids
-  tags                 = var.tags
+  docker_credential_helpers = var.docker_credential_helpers
+  gitlab_runner_config      = local.gitlab_runner_config
+  gitlab_runner_image       = var.gitlab_runner_image
+  gitlab_runner_token       = var.gitlab_runner_token
+  kms_key_id                = var.kms_key_id
+  vpc_id                    = var.vpc_id
+  vpc_subnet_ids            = var.vpc_subnet_ids
+  tags                      = var.tags
 }
 
 # Use rootful Podman Ignition module

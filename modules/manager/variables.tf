@@ -1,3 +1,9 @@
+variable "docker_credential_helpers" {
+  type        = map(string)
+  description = "Map of Docker registry hostnames to credential helper names, written to the manager's /root/.docker/config.json as credHelpers"
+  default     = {}
+}
+
 variable "gitlab_runner_command" {
   type        = list(string)
   description = "Command to run the GitLab Runner"

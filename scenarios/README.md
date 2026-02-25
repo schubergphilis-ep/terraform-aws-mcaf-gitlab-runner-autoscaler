@@ -1,6 +1,6 @@
 # GitLab Runner Scenarios
 
-This directory contains pre-configured scenario modules that make it easy to deploy GitLab Runners with different container runtime configurations. Each scenario is a complete, ready-to-use Terraform module that wraps the base `manager` and `instance` modules with opinionated defaults.
+This directory contains pre-configured scenario modules that make it easy to deploy GitLab Runners with different container runtime configurations using the [GitLab Runner Autoscaler](https://docs.gitlab.com/runner/runner_autoscale/gitlab-runner-autoscaler/). Each scenario is a complete, ready-to-use Terraform module that wraps the base `manager` and `instance` modules with opinionated defaults.
 
 ## Why Podman?
 
@@ -145,7 +145,9 @@ terraform apply
 
 ## Architecture
 
-All three scenarios use the same underlying architecture:
+All three scenarios use the same underlying architecture. The manager runs a [custom wrapper image](https://github.com/schubergphilis-ep/gitlab-runner-autoscaler-image) around `gitlab/gitlab-runner` that handles AWS Secrets Manager integration and Docker credential helper configuration at startup. You can provide your own image via the `gitlab_runner_image` variable as long as it implements the same entrypoint contract.
+
+The architecture looks as follows:
 
 ```
 ┌───────────────────────────────────────────────────────────┐
@@ -200,6 +202,7 @@ All scenarios share these common variables:
 | `capacity_per_instance` | Jobs per instance (default: 1) | No |
 | `max_instances` | Max EC2 instances (default: 5) | No |
 | `autoscaler_policy` | Scaling policy config | No |
+| `docker_credential_helpers` | Docker registry credential helpers (default: {}) | No |
 | `tags` | Resource tags | No |
 
 ## Autoscaling Policy Examples

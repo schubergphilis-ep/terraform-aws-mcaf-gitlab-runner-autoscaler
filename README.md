@@ -1,6 +1,6 @@
 # terraform-aws-mcaf-gitlab-runner-autoscaler
 
-Terraform module for deploying auto-scaling [GitLab Runner](https://docs.gitlab.com/runner/) infrastructure on AWS. Runners are managed by an ECS Fargate task and execute CI/CD jobs on EC2 Spot instances running [Fedora CoreOS](https://docs.fedoraproject.org/en-US/fedora-coreos/) with [Podman](https://podman.io/) as the container runtime.
+Terraform module for deploying auto-scaling [GitLab Runner](https://docs.gitlab.com/runner/) infrastructure on AWS using the [GitLab Runner Autoscaler](https://docs.gitlab.com/runner/runner_autoscale/gitlab-runner-autoscaler/). Runners are managed by an ECS Fargate task and execute CI/CD jobs on EC2 Spot instances running [Fedora CoreOS](https://docs.fedoraproject.org/en-US/fedora-coreos/) with [Podman](https://podman.io/) as the container runtime.
 
 ## Architecture
 
@@ -40,9 +40,15 @@ Terraform module for deploying auto-scaling [GitLab Runner](https://docs.gitlab.
 
 **Key components:**
 
-- **Manager** (ECS Fargate) — Runs the `gitlab-runner-autoscaler` container on ARM64. Polls GitLab for jobs, provisions EC2 instances via an Auto Scaling Group, and connects to them over SSH.
+- **Manager** (ECS Fargate) — Runs a [custom wrapper image](https://github.com/schubergphilis-ep/gitlab-runner-autoscaler-image) around `gitlab/gitlab-runner` on ARM64. The entrypoint fetches runner configuration and SSH keys from Secrets Manager, configures Docker credential helpers, and launches the runner. Polls GitLab for jobs, provisions EC2 instances via an Auto Scaling Group, and connects to them over SSH. See the [GitLab Runner Autoscaler documentation](https://docs.gitlab.com/runner/runner_autoscale/gitlab-runner-autoscaler/) for details on how autoscaling works.
 - **Executors** (EC2 Spot) — Fedora CoreOS instances with Podman. Automatically discovered compute-optimized instance types with NVMe instance storage. Scale to zero when idle.
 - **Secrets Manager** — Stores the runner configuration (including the GitLab token) and the SSH private key used for manager-to-executor communication.
+
+### Manager Image
+
+The manager runs a [custom wrapper image](https://github.com/schubergphilis-ep/gitlab-runner-autoscaler-image) that extends `gitlab/gitlab-runner:alpine` with AWS tooling (aws-cli, fleeting-plugin-aws, docker-credential-ecr-login). Its entrypoint handles fetching secrets from AWS Secrets Manager and transforming the runner configuration from JSON to TOML at startup.
+
+You can use a custom image by setting `gitlab_runner_image`. Your image must implement the same entrypoint contract (reading `GITLAB_CONFIG_SECRET_NAME`, `SSH_KEY_SECRET_NAME`, and optionally `DOCKER_CREDENTIAL_HELPERS` environment variables). See the [image repository](https://github.com/schubergphilis-ep/gitlab-runner-autoscaler-image) for the full entrypoint specification.
 
 ## Quick Start
 
@@ -116,10 +122,31 @@ All scenarios share these common variables:
 | `privileged_mode` | Enable Docker privileged mode (docker/podman-rootful only) | `bool` | `true` | no |
 | `autoscaler_policy` | Autoscaler idle policy configuration | `list(object)` | Scale to zero after 5m | no |
 | `kms_key_id` | KMS key ID for Secrets Manager encryption | `string` | `null` | no |
+| `gitlab_runner_image` | Custom manager container image (see [Manager Image](#manager-image)) | `string` | `null` | no |
 | `os_auto_updates` | Fedora CoreOS auto-update (Zincati) configuration | `object` | Immediate updates enabled | no |
+| `docker_credential_helpers` | Docker registry credential helpers (`credHelpers` in `config.json`) | `map(string)` | `{}` | no |
 | `tags` | Tags applied to all resources | `map(string)` | `{}` | no |
 
 See individual scenario READMEs for the full variable reference.
+
+### Docker Credential Helpers
+
+To authenticate with private container registries, configure credential helpers:
+
+```hcl
+module "gitlab_runner" {
+  source = "schubergphilis/mcaf-gitlab-runner-autoscaler/aws//scenarios/docker"
+
+  # ...
+
+  docker_credential_helpers = {
+    "123456789012.dkr.ecr.eu-west-1.amazonaws.com" = "ecr-login"
+    "gcr.io"                                        = "gcloud"
+  }
+}
+```
+
+This writes the map as `credHelpers` in the manager's `/root/.docker/config.json`.
 
 ## Outputs
 
