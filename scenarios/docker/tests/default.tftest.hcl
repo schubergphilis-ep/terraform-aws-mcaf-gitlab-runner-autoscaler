@@ -28,11 +28,11 @@ override_module {
 }
 
 variables {
-  runner_name          = "test-docker-runner"
-  gitlab_url           = "https://gitlab.example.com"
-  gitlab_runner_token  = "glrt-test-token-12345"
-  vpc_id               = "vpc-12345678"
-  vpc_subnet_ids       = ["subnet-12345678"]
+  runner_name         = "test-docker-runner"
+  gitlab_url          = "https://gitlab.example.com"
+  gitlab_runner_token = "glrt-test-token-12345"
+  vpc_id              = "vpc-12345678"
+  vpc_subnet_ids      = ["subnet-12345678"]
 }
 
 run "default_configuration" {
