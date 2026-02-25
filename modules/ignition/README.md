@@ -416,3 +416,29 @@ When modifying these modules:
 2. **Scenario-specific:** Update individual scenario modules
 3. **Test both scenarios** after changes
 4. **Update this README** with any new modules or behaviors
+
+<!-- BEGIN_TF_DOCS -->
+## Requirements
+
+No requirements.
+
+## Providers
+
+No providers.
+
+## Modules
+
+No modules.
+
+## Resources
+
+No resources.
+
+## Inputs
+
+No inputs.
+
+## Outputs
+
+No outputs.
+<!-- END_TF_DOCS -->
