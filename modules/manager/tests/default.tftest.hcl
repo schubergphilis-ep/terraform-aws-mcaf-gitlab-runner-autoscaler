@@ -1,8 +1,7 @@
 # Tests for the manager module
-# Uses mock providers for AWS and TLS — no real credentials needed
+# Uses mock provider for AWS — no real credentials needed
 
 mock_provider "aws" {}
-mock_provider "tls" {}
 
 override_module {
   target = module.runner_manager

@@ -8,7 +8,3 @@ output "manager_security_group_id" {
   value       = module.manager.security_group_id
 }
 
-output "public_ssh_key" {
-  description = "Public SSH key for accessing runner instances"
-  value       = module.manager.public_ssh_key
-}

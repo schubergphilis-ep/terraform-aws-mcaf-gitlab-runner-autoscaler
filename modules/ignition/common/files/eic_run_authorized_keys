@@ -1,0 +1,14 @@
+#!/bin/sh
+# Fetch EC2 Instance Connect ephemeral SSH keys from IMDS
+# Keys are pushed via SendSSHPublicKey API and valid for 60 seconds
+set -e
+
+USER="$1"
+
+# Get IMDSv2 token
+TOKEN=$(curl -s -X PUT "http://169.254.169.254/latest/api/token" \
+  -H "X-aws-ec2-metadata-token-ttl-seconds: 30" 2>/dev/null) || exit 0
+
+# Fetch active keys for the requested user
+curl -s -f "http://169.254.169.254/latest/meta-data/managed-ssh-keys/active-keys/${USER}" \
+  -H "X-aws-ec2-metadata-token: ${TOKEN}" 2>/dev/null || true

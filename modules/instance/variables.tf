@@ -72,9 +72,8 @@ variable "gitlab_runner_config" {
           credentials_file = optional(string, "")
         }))
         connector_config = object({
-          username               = string
-          use_static_credentials = optional(bool, false)
-          use_external_addr      = bool
+          username          = string
+          use_external_addr = bool
         })
         policy = list(object({
           idle_count      = number
@@ -113,11 +112,6 @@ variable "on_demand_percentage_above_base" {
     condition     = var.on_demand_percentage_above_base >= 0 && var.on_demand_percentage_above_base <= 100
     error_message = "On-demand percentage must be between 0 and 100."
   }
-}
-
-variable "public_ssh_key" {
-  type        = string
-  description = "Map of public SSH keys for the runners"
 }
 
 variable "tags" {

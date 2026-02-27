@@ -50,4 +50,12 @@ variable "os_auto_updates" {
     condition     = var.os_auto_updates.strategy != "periodic" || length(var.os_auto_updates.maintenance_windows) > 0
     error_message = "Zincati maintenance_windows must be specified when strategy is 'periodic'"
   }
+
+  validation {
+    condition = alltrue([
+      for window in var.os_auto_updates.maintenance_windows :
+      alltrue([for day in window.days : contains(["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"], day)])
+    ])
+    error_message = "Each day in maintenance_windows must be one of: Mon, Tue, Wed, Thu, Fri, Sat, Sun"
+  }
 }

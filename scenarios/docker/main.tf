@@ -15,9 +15,8 @@ locals {
         capacity_per_instance = var.capacity_per_instance
         max_instances         = var.max_instances
         connector_config = {
-          username               = "root"
-          use_static_credentials = true
-          use_external_addr      = false
+          username          = "root"
+          use_external_addr = false
         }
         policy = var.autoscaler_policy
       }
@@ -42,8 +41,7 @@ module "manager" {
 module "ignition" {
   source = "../../modules/ignition/podman-rootful"
 
-  os_auto_updates    = var.os_auto_updates
-  ssh_authorized_key = module.manager.public_ssh_key
+  os_auto_updates = var.os_auto_updates
 }
 
 module "instance" {
@@ -57,7 +55,6 @@ module "instance" {
   instance_types                   = var.instance_types
   on_demand_base_capacity          = var.on_demand_base_capacity
   on_demand_percentage_above_base  = var.on_demand_percentage_above_base
-  public_ssh_key                   = module.manager.public_ssh_key
   user_data                        = base64encode(module.ignition.rendered)
   vpc_id                           = var.vpc_id
   vpc_subnet_ids                   = var.vpc_subnet_ids

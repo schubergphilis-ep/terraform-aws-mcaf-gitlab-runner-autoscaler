@@ -1,5 +1,5 @@
 # Tests for the Podman rootless scenario
-# Uses mock providers for AWS and TLS — ignition provider runs for real
+# Uses mock provider for AWS — ignition provider runs for real
 
 mock_provider "aws" {
   override_data {
@@ -18,12 +18,17 @@ mock_provider "aws" {
   }
 }
 
-mock_provider "tls" {}
-
 override_module {
   target = module.manager.module.runner_manager
   outputs = {
     security_group_id = "sg-mock-runner-manager"
+  }
+}
+
+override_module {
+  target = module.instance.module.security_group
+  outputs = {
+    id = "sg-mock-instance"
   }
 }
 
@@ -48,22 +53,6 @@ run "default_configuration" {
     error_message = "instance_security_group_id output should not be null"
   }
 
-  assert {
-    condition     = output.public_ssh_key != null
-    error_message = "public_ssh_key output should not be null"
-  }
-}
-
-run "invalid_architecture" {
-  command = plan
-
-  variables {
-    architecture = "mips64"
-  }
-
-  expect_failures = [
-    var.architecture,
-  ]
 }
 
 run "invalid_capacity_per_instance" {

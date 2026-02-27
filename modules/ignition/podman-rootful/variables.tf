@@ -12,7 +12,3 @@ variable "os_auto_updates" {
   default     = {}
 }
 
-variable "ssh_authorized_key" {
-  type        = string
-  description = "SSH public key to authorize for root user access. Required for GitLab Runner autoscaler to connect as root."
-}

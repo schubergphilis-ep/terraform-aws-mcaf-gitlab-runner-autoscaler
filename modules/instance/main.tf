@@ -85,7 +85,7 @@ resource "aws_autoscaling_group" "default" {
 
   dynamic "tag" {
     for_each = merge(var.tags, {
-      Name = "${var.gitlab_runner_config.runners.name}-instance-asg"
+      Name = "${var.gitlab_runner_config.runners.name}-instance"
     })
     content {
       key                 = tag.key
@@ -130,7 +130,6 @@ resource "aws_launch_template" "default" {
   name_prefix   = var.gitlab_runner_config.runners.name
   image_id      = data.aws_ami.default.id
   instance_type = local.instance_types[0] # Use first instance type as default
-  key_name      = aws_key_pair.default.key_name
   user_data     = var.user_data
 
   block_device_mappings {
@@ -152,7 +151,7 @@ resource "aws_launch_template" "default" {
 
   network_interfaces {
     associate_public_ip_address = false
-    security_groups             = [aws_security_group.default.id]
+    security_groups             = [module.security_group.id]
   }
 
   tag_specifications {
@@ -164,44 +163,30 @@ resource "aws_launch_template" "default" {
   }
 }
 
-resource "aws_security_group" "default" {
+module "security_group" {
+  source  = "schubergphilis/mcaf-security-group/aws"
+  version = "~> 2.0.0"
+
   name_prefix = var.gitlab_runner_config.runners.name
   description = "Security group for GitLab Runner instances"
   vpc_id      = var.vpc_id
+  tags        = var.tags
 
-  tags = merge(var.tags, {
-    Name = "${var.gitlab_runner_config.runners.name}-sg"
-  })
+  egress_rules = {
+    all = {
+      cidr_ipv4   = ["0.0.0.0/0"]
+      description = "Allow all outbound traffic for CI/CD operations (GitLab API, container registries, package managers, AWS services)"
+    }
+  }
+
+  ingress_rules = {
+    ssh_from_manager = {
+      description                  = "Allow SSH access from GitLab Runner manager"
+      from_port                    = 22
+      ip_protocol                  = "tcp"
+      referenced_security_group_id = var.gitlab_manager_security_group_id
+      to_port                      = 22
+    }
+  }
 }
 
-resource "aws_vpc_security_group_egress_rule" "egress" {
-  #checkov:skip=CKV_AWS_382:GitLab Runner instances require unrestricted egress for CI/CD operations (GitLab API, container registries, package managers, AWS services, and arbitrary job dependencies)
-  #tfsec:ignore:aws-ec2-no-public-egress-sgr GitLab Runner instances require unrestricted egress for CI/CD operations (GitLab API, container registries, package managers, AWS services)
-
-  cidr_ipv4         = "0.0.0.0/0"
-  description       = "Allow all outbound traffic for GitLab Runner instances to access GitLab, ECR, S3, and other AWS services"
-  ip_protocol       = "-1" # semantically equivalent to all ports
-  security_group_id = aws_security_group.default.id
-
-  tags = var.tags
-}
-
-resource "aws_vpc_security_group_ingress_rule" "manager" {
-  #checkov:skip=CKV_AWS_24:False positive - SSH access is restricted to manager security group only, not 0.0.0.0/0 (uses referenced_security_group_id)
-
-  description                  = "Allow SSH access from GitLab Runner manager for instance provisioning and job execution"
-  from_port                    = 22
-  ip_protocol                  = "tcp"
-  referenced_security_group_id = var.gitlab_manager_security_group_id
-  security_group_id            = aws_security_group.default.id
-  to_port                      = 22
-
-  tags = var.tags
-}
-
-resource "aws_key_pair" "default" {
-  key_name_prefix = var.gitlab_runner_config.runners.name
-  public_key      = var.public_ssh_key
-
-  tags = var.tags
-}

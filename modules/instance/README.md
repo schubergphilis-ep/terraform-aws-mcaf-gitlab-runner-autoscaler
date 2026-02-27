@@ -1,3 +1,7 @@
+# Instance Module
+
+Manages the EC2 Auto Scaling Group and launch template for GitLab Runner executor instances. This module provisions Fedora CoreOS-based instances with NVMe instance storage, configures mixed instance policies (spot/on-demand), and creates a security group that allows SSH access from the manager.
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 
@@ -10,22 +14,20 @@
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 6.0 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | 6.34.0 |
 
 ## Modules
 
-No modules.
+| Name | Source | Version |
+|------|--------|---------|
+| <a name="module_security_group"></a> [security\_group](#module\_security\_group) | schubergphilis/mcaf-security-group/aws | ~> 2.0.0 |
 
 ## Resources
 
 | Name | Type |
 |------|------|
 | [aws_autoscaling_group.default](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/autoscaling_group) | resource |
-| [aws_key_pair.default](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/key_pair) | resource |
 | [aws_launch_template.default](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/launch_template) | resource |
-| [aws_security_group.default](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group) | resource |
-| [aws_vpc_security_group_egress_rule.egress](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc_security_group_egress_rule) | resource |
-| [aws_vpc_security_group_ingress_rule.manager](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc_security_group_ingress_rule) | resource |
 | [aws_ami.default](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/ami) | data source |
 | [aws_ec2_instance_types.default](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/ec2_instance_types) | data source |
 
@@ -34,8 +36,7 @@ No modules.
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_gitlab_manager_security_group_id"></a> [gitlab\_manager\_security\_group\_id](#input\_gitlab\_manager\_security\_group\_id) | Security group ID of the GitLab Runner manager for SSH access to instances | `string` | n/a | yes |
-| <a name="input_gitlab_runner_config"></a> [gitlab\_runner\_config](#input\_gitlab\_runner\_config) | GitLab Runner configuration for Docker Autoscaler | <pre>object({<br/>    concurrent = number<br/>    runners = object({<br/>      name        = string<br/>      url         = string<br/>      shell       = optional(string, "sh")<br/>      environment = optional(list(string), ["CONTAINER_HOST=unix:///tmp/podman.sock", "DOCKER_HOST=unix:///tmp/podman.sock"])<br/>      executor    = optional(string, "docker-autoscaler")<br/>      builds_dir  = optional(string, "/var/builds")<br/>      docker = object({<br/>        host                         = optional(string, "unix:///run/podman/podman.sock")<br/>        tls_verify                   = optional(bool, false)<br/>        privileged                   = optional(bool, false)<br/>        disable_entrypoint_overwrite = optional(bool, false)<br/>        oom_kill_disable             = optional(bool, false)<br/>        disable_cache                = optional(bool, false)<br/>        volumes                      = optional(list(string), ["/run/podman/podman.sock:/tmp/podman.sock:z", "/etc/builds:/etc/builds", "/cache"])<br/>        environment                  = optional(list(string), [])<br/>        image                        = optional(string, "alpine:latest")<br/>      })<br/>      autoscaler = object({<br/>        plugin                = string<br/>        capacity_per_instance = number<br/>        max_use_count         = optional(number, 0)<br/>        max_instances         = number<br/>        plugin_config = optional(object({<br/>          name             = optional(string, "")<br/>          profile          = optional(string, "")<br/>          config_file      = optional(string, "")<br/>          credentials_file = optional(string, "")<br/>        }))<br/>        connector_config = object({<br/>          username               = string<br/>          use_static_credentials = optional(bool, false)<br/>          use_external_addr      = bool<br/>        })<br/>        policy = list(object({<br/>          idle_count      = number<br/>          idle_time       = string<br/>          preemptive_mode = optional(bool, true)<br/>          periods         = optional(list(string), [])<br/>          timezone        = optional(string, "Europe/Amsterdam")<br/>        }))<br/>      })<br/>    })<br/>  })</pre> | n/a | yes |
-| <a name="input_public_ssh_key"></a> [public\_ssh\_key](#input\_public\_ssh\_key) | Map of public SSH keys for the runners | `string` | n/a | yes |
+| <a name="input_gitlab_runner_config"></a> [gitlab\_runner\_config](#input\_gitlab\_runner\_config) | GitLab Runner configuration for Docker Autoscaler | <pre>object({<br/>    concurrent = number<br/>    runners = object({<br/>      name        = string<br/>      url         = string<br/>      shell       = optional(string, "sh")<br/>      environment = optional(list(string), ["CONTAINER_HOST=unix:///tmp/podman.sock", "DOCKER_HOST=unix:///tmp/podman.sock"])<br/>      executor    = optional(string, "docker-autoscaler")<br/>      builds_dir  = optional(string, "/var/builds")<br/>      docker = object({<br/>        host                         = optional(string, "unix:///run/podman/podman.sock")<br/>        tls_verify                   = optional(bool, false)<br/>        privileged                   = optional(bool, false)<br/>        disable_entrypoint_overwrite = optional(bool, false)<br/>        oom_kill_disable             = optional(bool, false)<br/>        disable_cache                = optional(bool, false)<br/>        volumes                      = optional(list(string), ["/run/podman/podman.sock:/tmp/podman.sock:z", "/etc/builds:/etc/builds", "/cache"])<br/>        environment                  = optional(list(string), [])<br/>        image                        = optional(string, "alpine:latest")<br/>      })<br/>      autoscaler = object({<br/>        plugin                = string<br/>        capacity_per_instance = number<br/>        max_use_count         = optional(number, 0)<br/>        max_instances         = number<br/>        plugin_config = optional(object({<br/>          name             = optional(string, "")<br/>          profile          = optional(string, "")<br/>          config_file      = optional(string, "")<br/>          credentials_file = optional(string, "")<br/>        }))<br/>        connector_config = object({<br/>          username          = string<br/>          use_external_addr = bool<br/>        })<br/>        policy = list(object({<br/>          idle_count      = number<br/>          idle_time       = string<br/>          preemptive_mode = optional(bool, true)<br/>          periods         = optional(list(string), [])<br/>          timezone        = optional(string, "Europe/Amsterdam")<br/>        }))<br/>      })<br/>    })<br/>  })</pre> | n/a | yes |
 | <a name="input_user_data"></a> [user\_data](#input\_user\_data) | Base64-encoded Ignition configuration for instance initialization | `string` | n/a | yes |
 | <a name="input_vpc_id"></a> [vpc\_id](#input\_vpc\_id) | ID of the VPC where the runner instances will be deployed | `string` | n/a | yes |
 | <a name="input_vpc_subnet_ids"></a> [vpc\_subnet\_ids](#input\_vpc\_subnet\_ids) | List of VPC subnet IDs where runner instances will be deployed | `list(string)` | n/a | yes |

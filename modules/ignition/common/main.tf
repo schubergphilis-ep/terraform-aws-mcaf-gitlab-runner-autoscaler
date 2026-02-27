@@ -126,3 +126,72 @@ EOT
     )}"
   }
 }
+
+# EC2 Instance Connect support
+# Fedora CoreOS uses Afterburn for SSH key provisioning via IMDS.
+# We mask Afterburn's SSH key service and deploy the AWS EC2 Instance Connect
+# scripts instead, enabling ephemeral key-based SSH access.
+
+# Mask Afterburn SSH key provisioning to prevent conflict with EC2 Instance Connect
+data "ignition_systemd_unit" "mask_afterburn_sshkeys" {
+  name = "afterburn-sshkeys@core.service"
+  mask = true
+}
+
+# EC2 Instance Connect script deployed to /opt/aws/bin/
+# Simplified version that fetches ephemeral keys directly from IMDS
+data "ignition_file" "eic_run_authorized_keys" {
+  path      = "/opt/aws/bin/eic_run_authorized_keys"
+  mode      = 493 # 0755
+  overwrite = true
+
+  contents {
+    source = "data:text/plain;charset=utf-8;base64,${base64encode(file("${path.module}/files/eic_run_authorized_keys"))}"
+  }
+}
+
+# Set SELinux context on EIC scripts so sshd_t can execute them
+# On Fedora CoreOS, /opt -> /var/opt gets var_t context which sshd_t cannot execute
+data "ignition_systemd_unit" "relabel_eic_scripts" {
+  name    = "relabel-eic-scripts.service"
+  enabled = true
+
+  content = <<-EOT
+    [Unit]
+    Description=Set SELinux context for EC2 Instance Connect scripts
+    Before=sshd.service
+    After=ignition-files.service
+
+    [Service]
+    Type=oneshot
+    ExecStart=/usr/bin/chcon -R -t bin_t /opt/aws/bin
+    RemainAfterExit=yes
+
+    [Install]
+    WantedBy=multi-user.target
+  EOT
+}
+
+# sshd configuration drop-in for EC2 Instance Connect
+# Placed at 20-ec2-instance-connect.conf to sort before the existing 40-ssh-key-dir.conf
+data "ignition_file" "eic_sshd_config" {
+  path      = "/etc/ssh/sshd_config.d/20-ec2-instance-connect.conf"
+  mode      = 420 # 0644
+  overwrite = true
+
+  contents {
+    source = "data:text/plain;charset=utf-8;base64,${base64encode(<<-EOT
+AuthorizedKeysCommand /opt/aws/bin/eic_run_authorized_keys %u %f
+AuthorizedKeysCommandUser ec2-instance-connect
+EOT
+    )}"
+  }
+}
+
+# System user for running the AuthorizedKeysCommand
+data "ignition_user" "ec2_instance_connect" {
+  name           = "ec2-instance-connect"
+  system         = true
+  no_create_home = true
+  shell          = "/sbin/nologin"
+}

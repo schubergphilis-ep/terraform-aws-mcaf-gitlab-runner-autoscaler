@@ -2,10 +2,6 @@ variable "architecture" {
   type        = string
   description = "CPU architecture for GitLab Runner (arm64 or x86_64)"
   default     = "arm64"
-  validation {
-    condition     = contains(["arm64", "x86_64"], var.architecture)
-    error_message = "Architecture must be either 'arm64' or 'x86_64'"
-  }
 }
 
 variable "autoscaler_policy" {

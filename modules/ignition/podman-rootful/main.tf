@@ -37,15 +37,6 @@ data "ignition_systemd_unit" "docker_sock_symlink" {
   EOF
 }
 
-# Create root user with SSH keys
-# This is required because the GitLab Runner autoscaler
-# connects directly as root user (connector_config.username = "root")
-data "ignition_user" "root" {
-  name = "root"
-
-  ssh_authorized_keys = [var.ssh_authorized_key]
-}
-
 # Assemble complete Ignition config for rootful Podman
 data "ignition_config" "default" {
   systemd = compact([
@@ -54,13 +45,17 @@ data "ignition_config" "default" {
     module.common.relabel_container_storage_rendered,
     module.common.mask_docker_rendered,
     module.common.mask_zincati_rendered,
+    module.common.mask_afterburn_sshkeys_rendered,
+    module.common.relabel_eic_scripts_rendered,
     data.ignition_systemd_unit.podman_socket.rendered,
     data.ignition_systemd_unit.docker_sock_symlink.rendered
   ])
   files = compact([
-    module.common.zincati_config_rendered
+    module.common.zincati_config_rendered,
+    module.common.eic_run_authorized_keys_rendered,
+    module.common.eic_sshd_config_rendered,
   ])
   users = [
-    data.ignition_user.root.rendered
+    module.common.ec2_instance_connect_user_rendered
   ]
 }

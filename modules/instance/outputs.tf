@@ -15,5 +15,5 @@ output "launch_template_id" {
 
 output "security_group_id" {
   description = "ID of the security group attached to runner instances"
-  value       = aws_security_group.default.id
+  value       = module.security_group.id
 }

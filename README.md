@@ -33,22 +33,21 @@ Terraform module for deploying auto-scaling [GitLab Runner](https://docs.gitlab.
                           │ ┌────────────────────────────────────┐ │
                           │ │ AWS Secrets Manager                │ │
                           │ │  - Runner config (TOML as JSON)    │ │
-                          │ │  - SSH private key                 │ │
                           │ └────────────────────────────────────┘ │
                           └────────────────────────────────────────┘
 ```
 
 **Key components:**
 
-- **Manager** (ECS Fargate) — Runs a [custom wrapper image](https://github.com/schubergphilis-ep/gitlab-runner-autoscaler-image) around `gitlab/gitlab-runner` on ARM64. The entrypoint fetches runner configuration and SSH keys from Secrets Manager, configures Docker credential helpers, and launches the runner. Polls GitLab for jobs, provisions EC2 instances via an Auto Scaling Group, and connects to them over SSH. See the [GitLab Runner Autoscaler documentation](https://docs.gitlab.com/runner/runner_autoscale/gitlab-runner-autoscaler/) for details on how autoscaling works.
+- **Manager** (ECS Fargate) — Runs a [custom wrapper image](https://github.com/schubergphilis-ep/gitlab-runner-autoscaler-image) around `gitlab/gitlab-runner` on ARM64. The entrypoint fetches runner configuration from Secrets Manager, configures Docker credential helpers, and launches the runner. Polls GitLab for jobs, provisions EC2 instances via an Auto Scaling Group, and connects to them over SSH using [EC2 Instance Connect](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/connect-linux-inst-eic.html) (ephemeral keys). See the [GitLab Runner Autoscaler documentation](https://docs.gitlab.com/runner/runner_autoscale/gitlab-runner-autoscaler/) for details on how autoscaling works.
 - **Executors** (EC2 Spot) — Fedora CoreOS instances with Podman. Automatically discovered compute-optimized instance types with NVMe instance storage. Scale to zero when idle.
-- **Secrets Manager** — Stores the runner configuration (including the GitLab token) and the SSH private key used for manager-to-executor communication.
+- **Secrets Manager** — Stores the runner configuration (including the GitLab token).
 
 ### Manager Image
 
 The manager runs a [custom wrapper image](https://github.com/schubergphilis-ep/gitlab-runner-autoscaler-image) that extends `gitlab/gitlab-runner:alpine` with AWS tooling (aws-cli, fleeting-plugin-aws, docker-credential-ecr-login). Its entrypoint handles fetching secrets from AWS Secrets Manager and transforming the runner configuration from JSON to TOML at startup.
 
-You can use a custom image by setting `gitlab_runner_image`. Your image must implement the same entrypoint contract (reading `GITLAB_CONFIG_SECRET_NAME`, `SSH_KEY_SECRET_NAME`, and optionally `DOCKER_CREDENTIAL_HELPERS` environment variables). See the [image repository](https://github.com/schubergphilis-ep/gitlab-runner-autoscaler-image) for the full entrypoint specification.
+You can use a custom image by setting `gitlab_runner_image`. Your image must implement the same entrypoint contract (reading `GITLAB_CONFIG_SECRET_NAME` and optionally `DOCKER_CREDENTIAL_HELPERS` environment variables). See the [image repository](https://github.com/schubergphilis-ep/gitlab-runner-autoscaler-image) for the full entrypoint specification.
 
 ## Quick Start
 

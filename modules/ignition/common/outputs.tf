@@ -27,3 +27,28 @@ output "zincati_config_rendered" {
   description = "Rendered Zincati config file (null if not using periodic strategy)"
   value       = var.os_auto_updates.enabled && var.os_auto_updates.strategy == "periodic" ? data.ignition_file.zincati_config[0].rendered : null
 }
+
+output "mask_afterburn_sshkeys_rendered" {
+  description = "Rendered systemd unit for masking Afterburn SSH key provisioning"
+  value       = data.ignition_systemd_unit.mask_afterburn_sshkeys.rendered
+}
+
+output "eic_run_authorized_keys_rendered" {
+  description = "Rendered ignition file for eic_run_authorized_keys script"
+  value       = data.ignition_file.eic_run_authorized_keys.rendered
+}
+
+output "relabel_eic_scripts_rendered" {
+  description = "Rendered systemd unit for SELinux relabeling of EIC scripts"
+  value       = data.ignition_systemd_unit.relabel_eic_scripts.rendered
+}
+
+output "eic_sshd_config_rendered" {
+  description = "Rendered ignition file for EC2 Instance Connect sshd configuration"
+  value       = data.ignition_file.eic_sshd_config.rendered
+}
+
+output "ec2_instance_connect_user_rendered" {
+  description = "Rendered ignition user for ec2-instance-connect system user"
+  value       = data.ignition_user.ec2_instance_connect.rendered
+}

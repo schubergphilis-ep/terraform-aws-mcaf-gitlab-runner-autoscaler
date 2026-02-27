@@ -43,9 +43,8 @@ variable "gitlab_runner_config" {
           credentials_file = optional(string, "")
         }))
         connector_config = object({
-          username               = string
-          use_static_credentials = optional(bool, false)
-          use_external_addr      = bool
+          username          = string
+          use_external_addr = bool
         })
         policy = list(object({
           idle_count      = number

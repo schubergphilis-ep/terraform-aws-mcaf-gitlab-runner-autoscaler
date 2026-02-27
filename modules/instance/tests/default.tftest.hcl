@@ -18,9 +18,15 @@ mock_provider "aws" {
   }
 }
 
+override_module {
+  target = module.security_group
+  outputs = {
+    id = "sg-mock-instance"
+  }
+}
+
 variables {
   gitlab_manager_security_group_id = "sg-manager-12345"
-  public_ssh_key                   = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAITest test@test"
   user_data                        = "e30=" # base64 encoded "{}"
   vpc_id                           = "vpc-12345678"
   vpc_subnet_ids                   = ["subnet-12345678"]
@@ -68,11 +74,6 @@ run "default_configuration" {
   assert {
     condition     = aws_autoscaling_group.default.desired_capacity == 0
     error_message = "ASG desired_capacity should be 0"
-  }
-
-  assert {
-    condition     = aws_vpc_security_group_ingress_rule.manager.from_port == 22
-    error_message = "Security group should allow ingress on port 22"
   }
 
   assert {

@@ -4,11 +4,11 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 6.0"
+      version = ">= 6.0"
     }
     ignition = {
       source  = "community-terraform-providers/ignition"
-      version = "~> 2.1"
+      version = ">= 2.1"
     }
   }
 }

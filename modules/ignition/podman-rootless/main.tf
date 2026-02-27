@@ -85,7 +85,6 @@ data "ignition_systemd_unit" "docker_sock_symlink" {
 }
 
 # Assemble complete Ignition config for rootless Podman
-# Note: SSH key for 'core' user is automatically configured by AWS via key_pair in launch template
 data "ignition_config" "default" {
   systemd = compact([
     module.common.setup_instance_store_rendered,
@@ -93,11 +92,18 @@ data "ignition_config" "default" {
     module.common.relabel_container_storage_rendered,
     module.common.mask_docker_rendered,
     module.common.mask_zincati_rendered,
+    module.common.mask_afterburn_sshkeys_rendered,
+    module.common.relabel_eic_scripts_rendered,
     data.ignition_systemd_unit.enable_linger.rendered,
     data.ignition_systemd_unit.podman_user_socket.rendered,
     data.ignition_systemd_unit.docker_sock_symlink.rendered
   ])
   files = compact([
-    module.common.zincati_config_rendered
+    module.common.zincati_config_rendered,
+    module.common.eic_run_authorized_keys_rendered,
+    module.common.eic_sshd_config_rendered,
   ])
+  users = [
+    module.common.ec2_instance_connect_user_rendered
+  ]
 }
