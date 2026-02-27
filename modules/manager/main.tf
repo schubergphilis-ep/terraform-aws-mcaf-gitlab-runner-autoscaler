@@ -75,6 +75,17 @@ data "aws_iam_policy_document" "task_execution_role" {
     ]
     resources = ["*"]
   }
+
+  dynamic "statement" {
+    for_each = var.kms_key_id != null ? [var.kms_key_id] : []
+    content {
+      actions = [
+        "kms:Decrypt",
+        "kms:DescribeKey"
+      ]
+      resources = [statement.value]
+    }
+  }
 }
 
 module "runner_manager" {
