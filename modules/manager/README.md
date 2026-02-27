@@ -14,7 +14,7 @@ Deploys the GitLab Runner manager as an ECS Fargate task. The manager polls GitL
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | 6.33.0 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 6.0 |
 
 ## Modules
 
