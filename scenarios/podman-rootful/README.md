@@ -35,24 +35,7 @@ module "gitlab_runner" {
 }
 ```
 
-See the [scenarios README](../README.md) for autoscaling policy examples, debugging instructions, and migration guides.
-
-## Security Considerations
-
-- Containers run with elevated privileges (root)
-- Instances use private subnets with security groups
-- Runner config stored in AWS Secrets Manager
-- SSH restricted to manager security group (uses EC2 Instance Connect)
-
-## Related Scenarios
-
-- [docker](../docker/): Same functionality with Docker socket symlink
-- [podman-rootless](../podman-rootless/): Enhanced security with rootless Podman
-
-## References
-
-- [GitLab Runner Autoscaler](https://docs.gitlab.com/runner/runner_autoscale/gitlab-runner-autoscaler/)
-- [Manager wrapper image](https://github.com/schubergphilis-ep/gitlab-runner-autoscaler-image)
+See the [scenarios README](../README.md) for comparisons, autoscaling policy examples, debugging instructions, and migration guides.
 
 <!-- BEGIN_TF_DOCS -->
 ## Requirements

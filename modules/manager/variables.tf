@@ -57,6 +57,21 @@ variable "gitlab_runner_config" {
     })
   })
   description = "GitLab Runner configuration for Docker Autoscaler"
+
+  validation {
+    condition     = var.gitlab_runner_config.concurrent >= 1
+    error_message = "Concurrent jobs must be at least 1."
+  }
+
+  validation {
+    condition     = var.gitlab_runner_config.runners.autoscaler.capacity_per_instance >= 1
+    error_message = "Capacity per instance must be at least 1."
+  }
+
+  validation {
+    condition     = var.gitlab_runner_config.runners.autoscaler.max_instances >= 1
+    error_message = "Max instances must be at least 1."
+  }
 }
 
 variable "gitlab_runner_image" {

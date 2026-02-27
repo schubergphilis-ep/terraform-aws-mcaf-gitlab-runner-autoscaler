@@ -54,15 +54,3 @@ run "default_configuration" {
   }
 
 }
-
-run "invalid_capacity_per_instance" {
-  command = plan
-
-  variables {
-    capacity_per_instance = 0
-  }
-
-  expect_failures = [
-    var.capacity_per_instance,
-  ]
-}

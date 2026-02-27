@@ -66,3 +66,111 @@ run "naming_convention" {
     error_message = "Secret name_prefix should match the runner name"
   }
 }
+
+run "invalid_capacity_per_instance" {
+  command = plan
+
+  variables {
+    gitlab_runner_config = {
+      concurrent = 10
+      runners = {
+        name = "test-runner"
+        url  = "https://gitlab.example.com"
+        docker = {
+          host = "unix:///run/podman/podman.sock"
+        }
+        autoscaler = {
+          plugin                = "aws"
+          capacity_per_instance = 0
+          max_instances         = 5
+          connector_config = {
+            username          = "root"
+            use_external_addr = false
+          }
+          policy = [
+            {
+              idle_count = 0
+              idle_time  = "5m"
+            }
+          ]
+        }
+      }
+    }
+  }
+
+  expect_failures = [
+    var.gitlab_runner_config,
+  ]
+}
+
+run "invalid_concurrent" {
+  command = plan
+
+  variables {
+    gitlab_runner_config = {
+      concurrent = 0
+      runners = {
+        name = "test-runner"
+        url  = "https://gitlab.example.com"
+        docker = {
+          host = "unix:///run/podman/podman.sock"
+        }
+        autoscaler = {
+          plugin                = "aws"
+          capacity_per_instance = 1
+          max_instances         = 5
+          connector_config = {
+            username          = "root"
+            use_external_addr = false
+          }
+          policy = [
+            {
+              idle_count = 0
+              idle_time  = "5m"
+            }
+          ]
+        }
+      }
+    }
+  }
+
+  expect_failures = [
+    var.gitlab_runner_config,
+  ]
+}
+
+run "invalid_max_instances" {
+  command = plan
+
+  variables {
+    gitlab_runner_config = {
+      concurrent = 10
+      runners = {
+        name = "test-runner"
+        url  = "https://gitlab.example.com"
+        docker = {
+          host = "unix:///run/podman/podman.sock"
+        }
+        autoscaler = {
+          plugin                = "aws"
+          capacity_per_instance = 1
+          max_instances         = 0
+          connector_config = {
+            username          = "root"
+            use_external_addr = false
+          }
+          policy = [
+            {
+              idle_count = 0
+              idle_time  = "5m"
+            }
+          ]
+        }
+      }
+    }
+  }
+
+  expect_failures = [
+    var.gitlab_runner_config,
+  ]
+}

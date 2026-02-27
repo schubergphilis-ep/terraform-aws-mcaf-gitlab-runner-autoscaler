@@ -42,27 +42,7 @@ module "gitlab_runner" {
 }
 ```
 
-See the [scenarios README](../README.md) for autoscaling policy examples, debugging instructions, and migration guides.
-
-## Security Considerations
-
-- Containers cannot escalate privileges
-- Container root (UID 0) maps to host UID 1000 via user namespaces
-- Reduced kernel capabilities for containers
-- Instances use private subnets with security groups
-- Runner config stored in AWS Secrets Manager
-- SSH restricted to manager security group (uses EC2 Instance Connect)
-
-## Related Scenarios
-
-- [podman-rootful](../podman-rootful/): Maximum compatibility with privileged mode
-
-## References
-
-- [GitLab Runner Autoscaler](https://docs.gitlab.com/runner/runner_autoscale/gitlab-runner-autoscaler/)
-- [Manager wrapper image](https://github.com/schubergphilis-ep/gitlab-runner-autoscaler-image)
-- [Podman Rootless Documentation](https://github.com/containers/podman/blob/main/docs/tutorials/rootless_tutorial.md)
-- [Kaniko Documentation](https://github.com/GoogleContainerTools/kaniko)
+See the [scenarios README](../README.md) for comparisons, autoscaling policy examples, debugging instructions, and migration guides.
 
 <!-- BEGIN_TF_DOCS -->
 ## Requirements

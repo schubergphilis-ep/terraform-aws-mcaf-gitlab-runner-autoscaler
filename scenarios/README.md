@@ -40,25 +40,6 @@ Runs containers **without root privileges** for enhanced security.
 - No privileged mode or Docker-in-Docker (use Kaniko/Buildah instead)
 - Runs as `core` (UID 1000)
 
-## Quick Start
-
-```hcl
-module "gitlab_runner" {
-  source = "schubergphilis/mcaf-gitlab-runner-autoscaler/aws//scenarios/docker"
-
-  runner_name         = "my-runner"
-  gitlab_url          = "https://gitlab.com"
-  gitlab_runner_token = var.gitlab_runner_token
-
-  vpc_id         = "vpc-12345678"
-  vpc_subnet_ids = ["subnet-12345678", "subnet-87654321"]
-
-  tags = {
-    Environment = "production"
-  }
-}
-```
-
 ## Comparison Matrix
 
 | Feature | Docker | Podman Rootful | Podman Rootless |

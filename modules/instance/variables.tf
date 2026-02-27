@@ -20,6 +20,11 @@ variable "ebs_volume_size" {
   description = "Size of the EBS root volume in GB"
   default     = 200
   nullable    = false
+
+  validation {
+    condition     = var.ebs_volume_size > 0
+    error_message = "EBS volume size must be greater than 0."
+  }
 }
 
 variable "ebs_volume_type" {
@@ -86,6 +91,21 @@ variable "gitlab_runner_config" {
     })
   })
   description = "GitLab Runner configuration for Docker Autoscaler"
+
+  validation {
+    condition     = var.gitlab_runner_config.concurrent >= 1
+    error_message = "Concurrent jobs must be at least 1."
+  }
+
+  validation {
+    condition     = var.gitlab_runner_config.runners.autoscaler.capacity_per_instance >= 1
+    error_message = "Capacity per instance must be at least 1."
+  }
+
+  validation {
+    condition     = var.gitlab_runner_config.runners.autoscaler.max_instances >= 1
+    error_message = "Max instances must be at least 1."
+  }
 }
 
 variable "instance_types" {
@@ -100,6 +120,11 @@ variable "on_demand_base_capacity" {
   description = "Absolute minimum number of on-demand instances"
   default     = 0
   nullable    = false
+
+  validation {
+    condition     = var.on_demand_base_capacity >= 0
+    error_message = "On-demand base capacity must be 0 or greater."
+  }
 }
 
 variable "on_demand_percentage_above_base" {

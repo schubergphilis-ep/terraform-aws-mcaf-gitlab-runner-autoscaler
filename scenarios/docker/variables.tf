@@ -26,22 +26,12 @@ variable "capacity_per_instance" {
   type        = number
   description = "Number of jobs each instance can handle concurrently"
   default     = 1
-
-  validation {
-    condition     = var.capacity_per_instance >= 1
-    error_message = "Capacity per instance must be at least 1."
-  }
 }
 
 variable "concurrent_jobs" {
   type        = number
   description = "Maximum number of concurrent jobs the runner can handle"
   default     = 4
-
-  validation {
-    condition     = var.concurrent_jobs >= 1
-    error_message = "Concurrent jobs must be at least 1."
-  }
 }
 
 variable "docker_credential_helpers" {
