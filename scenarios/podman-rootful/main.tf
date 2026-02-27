@@ -52,6 +52,7 @@ module "instance" {
   gitlab_manager_security_group_id = module.manager.security_group_id
   gitlab_runner_config             = local.gitlab_runner_config
   instance_types                   = var.instance_types
+  kms_key_id                       = var.kms_key_id
   on_demand_base_capacity          = var.on_demand_base_capacity
   on_demand_percentage_above_base  = var.on_demand_percentage_above_base
   user_data                        = base64encode(module.ignition.rendered)

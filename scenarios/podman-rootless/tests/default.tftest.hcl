@@ -53,4 +53,13 @@ run "default_configuration" {
     error_message = "instance_security_group_id output should not be null"
   }
 
+  assert {
+    condition     = module.instance.autoscaling_group_name == "test-podman-rootless-runner-instance-asg"
+    error_message = "ASG name must follow the <runner_name>-instance-asg convention"
+  }
+
+  assert {
+    condition     = module.ignition.rendered != ""
+    error_message = "Ignition config must be non-empty"
+  }
 }

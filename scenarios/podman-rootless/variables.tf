@@ -77,7 +77,7 @@ variable "instance_types" {
 
 variable "kms_key_id" {
   type        = string
-  description = "Optional KMS key ID for encrypting Secrets Manager secrets. If not provided, uses AWS managed key"
+  description = "KMS key ID for encrypting Secrets Manager secrets, CloudWatch log groups, and EBS volumes. Strongly recommended: the GitLab runner token is stored in the Terraform state file; ensure the state backend is encrypted and access-controlled"
   default     = null
 }
 
@@ -115,8 +115,8 @@ variable "os_auto_updates" {
 
 variable "privileged_mode" {
   type        = bool
-  description = "Enable Docker privileged mode for runners (required for Docker-in-Docker)"
-  default     = true
+  description = "Enable Docker privileged mode for runners. Defaults to false for rootless Podman since this scenario is designed for reduced-privilege operation"
+  default     = false
 }
 
 variable "runner_name" {

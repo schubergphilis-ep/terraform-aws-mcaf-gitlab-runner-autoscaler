@@ -4,10 +4,6 @@
 run "defaults" {
   command = plan
 
-  variables {
-    ssh_authorized_key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAITest test@test"
-  }
-
   assert {
     condition     = output.rendered != null
     error_message = "rendered output should not be null"
@@ -23,7 +19,6 @@ run "zincati_disabled" {
   command = plan
 
   variables {
-    ssh_authorized_key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAITest test@test"
     os_auto_updates = {
       enabled = false
     }

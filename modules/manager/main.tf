@@ -1,3 +1,6 @@
+data "aws_caller_identity" "current" {}
+data "aws_region" "current" {}
+
 locals {
   updated_runners = merge(var.gitlab_runner_config, {
     runners = [merge(var.gitlab_runner_config.runners, {
@@ -31,7 +34,7 @@ resource "aws_secretsmanager_secret_version" "config" {
 data "aws_iam_policy_document" "task_execution_role" {
   #checkov:skip=CKV_AWS_107:secretsmanager:GetSecretValue is required for runner to access configuration
   #checkov:skip=CKV_AWS_356:EC2 and AutoScaling describe actions require wildcard resources to discover and manage dynamic infrastructure
-  #checkov:skip=CKV_AWS_111:ec2-instance-connect requires wildcard resource as instance IDs are dynamic; access is restricted via ec2:ResourceTag/Name condition
+  #checkov:skip=CKV_AWS_111:ec2-instance-connect targets dynamic instance IDs; scoped to account/region ARN and restricted via ec2:ResourceTag/Name condition
 
   statement {
     actions = [
@@ -44,7 +47,7 @@ data "aws_iam_policy_document" "task_execution_role" {
 
   statement {
     actions   = ["ec2-instance-connect:SendSSHPublicKey"]
-    resources = ["*"]
+    resources = ["arn:aws:ec2:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:instance/*"]
 
     condition {
       test     = "StringEquals"
@@ -59,7 +62,7 @@ data "aws_iam_policy_document" "task_execution_role" {
       "autoscaling:TerminateInstanceInAutoScalingGroup"
     ]
     resources = [
-      "arn:aws:autoscaling:*:*:autoScalingGroup:*:autoScalingGroupName/${var.gitlab_runner_config.runners.name}-instance-asg"
+      "arn:aws:autoscaling:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:autoScalingGroup:*:autoScalingGroupName/${var.gitlab_runner_config.runners.name}-instance-asg"
     ]
   }
 
@@ -86,6 +89,7 @@ module "runner_manager" {
   command                  = var.gitlab_runner_command
   ecs_subnet_ids           = var.vpc_subnet_ids
   image                    = var.gitlab_runner_image
+  kms_key_id               = var.kms_key_id
   public_ip                = false
   readonly_root_filesystem = false
   role_policy              = data.aws_iam_policy_document.task_execution_role.json

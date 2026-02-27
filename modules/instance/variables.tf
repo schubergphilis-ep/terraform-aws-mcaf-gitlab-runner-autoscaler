@@ -44,6 +44,12 @@ variable "gitlab_manager_security_group_id" {
   description = "Security group ID of the GitLab Runner manager for SSH access to instances"
 }
 
+variable "kms_key_id" {
+  type        = string
+  description = "KMS key ID for encrypting EBS volumes. If not provided, uses the AWS managed key (aws/ebs)"
+  default     = null
+}
+
 variable "gitlab_runner_config" {
   type = object({
     concurrent = number
@@ -61,7 +67,7 @@ variable "gitlab_runner_config" {
         disable_entrypoint_overwrite = optional(bool, false)
         oom_kill_disable             = optional(bool, false)
         disable_cache                = optional(bool, false)
-        volumes                      = optional(list(string), ["/run/podman/podman.sock:/tmp/podman.sock:z", "/etc/builds:/etc/builds", "/cache"])
+        volumes                      = optional(list(string), [])
         environment                  = optional(list(string), [])
         image                        = optional(string, "alpine:latest")
       })
@@ -75,7 +81,7 @@ variable "gitlab_runner_config" {
           profile          = optional(string, "")
           config_file      = optional(string, "")
           credentials_file = optional(string, "")
-        }))
+        }), {})
         connector_config = object({
           username          = string
           use_external_addr = bool

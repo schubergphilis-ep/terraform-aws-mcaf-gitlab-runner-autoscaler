@@ -29,14 +29,12 @@ Ignition configuration for rootful Podman on Fedora CoreOS. Configures root user
 | [ignition_config.default](https://registry.terraform.io/providers/community-terraform-providers/ignition/latest/docs/data-sources/config) | data source |
 | [ignition_systemd_unit.docker_sock_symlink](https://registry.terraform.io/providers/community-terraform-providers/ignition/latest/docs/data-sources/systemd_unit) | data source |
 | [ignition_systemd_unit.podman_socket](https://registry.terraform.io/providers/community-terraform-providers/ignition/latest/docs/data-sources/systemd_unit) | data source |
-| [ignition_user.root](https://registry.terraform.io/providers/community-terraform-providers/ignition/latest/docs/data-sources/user) | data source |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_os_auto_updates"></a> [os\_auto\_updates](#input\_os\_auto\_updates) | OS auto-updater (Zincati) configuration for Fedora CoreOS instances | <pre>object({<br/>    enabled  = optional(bool, true)<br/>    strategy = optional(string, "immediate") # immediate or periodic<br/>    maintenance_windows = optional(list(object({<br/>      days           = list(string) # ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]<br/>      start_time     = string       # "22:00" (UTC)<br/>      length_minutes = number       # 60<br/>    })), [])<br/>  })</pre> | `{}` | no |
-| <a name="input_ssh_authorized_key"></a> [ssh\_authorized\_key](#input\_ssh\_authorized\_key) | SSH public key to authorize for root user access. Required for GitLab Runner autoscaler to connect as root. | `string` | n/a | yes |
 
 ## Outputs
 

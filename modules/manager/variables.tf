@@ -41,7 +41,7 @@ variable "gitlab_runner_config" {
           profile          = optional(string, "")
           config_file      = optional(string, "")
           credentials_file = optional(string, "")
-        }))
+        }), {})
         connector_config = object({
           username          = string
           use_external_addr = bool
@@ -88,7 +88,7 @@ variable "gitlab_runner_token" {
 
 variable "kms_key_id" {
   type        = string
-  description = "KMS key ID for encrypting Secrets Manager secrets. If not provided, uses AWS managed key (aws/secretsmanager)"
+  description = "KMS key ID for encrypting Secrets Manager secrets and CloudWatch log groups. Strongly recommended: the GitLab runner token is stored in the Terraform state file as plaintext; ensure the state backend is encrypted and access-controlled. If not provided, uses AWS managed keys"
   default     = null
 }
 

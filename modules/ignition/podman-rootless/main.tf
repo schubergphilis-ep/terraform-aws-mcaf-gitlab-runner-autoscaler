@@ -76,7 +76,7 @@ data "ignition_systemd_unit" "docker_sock_symlink" {
 
     [Service]
     Type=oneshot
-    ExecStart=/usr/bin/ln -sf /run/user/1000/podman/podman.sock /var/run/docker.sock
+    ExecStart=/bin/bash -c '/usr/bin/ln -sf /run/user/$(id -u core)/podman/podman.sock /var/run/docker.sock'
     RemainAfterExit=yes
 
     [Install]
