@@ -14,7 +14,7 @@ Manages the EC2 Auto Scaling Group and launch template for GitLab Runner executo
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | 6.34.0 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 6.0 |
 
 ## Modules
 
