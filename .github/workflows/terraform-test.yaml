@@ -1,0 +1,43 @@
+name: Terraform Test
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  push:
+    branches: [main]
+
+jobs:
+  discover:
+    name: Discover test directories
+    runs-on: ubuntu-latest
+    outputs:
+      directories: ${{ steps.find.outputs.directories }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Find directories containing tests
+        id: find
+        run: |
+          dirs=$(find . -name '*.tftest.hcl' -printf '%h\n' | sed 's|/tests$||' | sort -u | jq -R -s -c 'split("\n") | map(select(. != ""))')
+          echo "directories=${dirs}" >> "$GITHUB_OUTPUT"
+
+  test:
+    name: "Test: ${{ matrix.directory }}"
+    needs: discover
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        directory: ${{ fromJson(needs.discover.outputs.directories) }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform Init
+        working-directory: ${{ matrix.directory }}
+        run: terraform init -backend=false
+
+      - name: Terraform Test
+        working-directory: ${{ matrix.directory }}
+        run: terraform test
