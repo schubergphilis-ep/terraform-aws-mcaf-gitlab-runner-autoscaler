@@ -7,7 +7,6 @@
 module "ignition" {
   source = "../../modules/ignition"
   mode   = "rootful"  # or "rootless"
-  ssh_authorized_key = var.key
 }
 ```
 
@@ -20,7 +19,7 @@ module "ignition" {
 
 **Why Option B:**
 - Zero conditionals or if/else logic
-- Type-safe (rootless has no ssh_authorized_key variable)
+- Type-safe
 - Clear what each module does
 - Easy to create new variants
 - Follows Terraform module best practices

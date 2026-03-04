@@ -37,7 +37,6 @@ module "manager" {
 }
 
 # Use rootless Podman Ignition module
-# Note: No ssh_authorized_key variable - AWS key_pair handles SSH for core user
 module "ignition" {
   source = "../../modules/ignition/podman-rootless"
 
