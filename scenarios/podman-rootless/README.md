@@ -26,7 +26,7 @@ Deploys a GitLab Runner with **rootless Podman** as the container runtime. Provi
 
 ```hcl
 module "gitlab_runner" {
-  source = "schubergphilis/mcaf-gitlab-runner-autoscaler/aws//scenarios/podman-rootless"
+  source = "schubergphilis-ep/mcaf-gitlab-runner-autoscaler/aws//scenarios/podman-rootless"
 
   runner_name         = "my-secure-runner"
   gitlab_url          = "https://gitlab.com"

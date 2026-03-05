@@ -135,7 +135,7 @@ build:
 These are functionally identical — just change the source:
 
 ```hcl
-source = "schubergphilis/mcaf-gitlab-runner-autoscaler/aws//scenarios/podman-rootful"
+source = "schubergphilis-ep/mcaf-gitlab-runner-autoscaler/aws//scenarios/podman-rootful"
 ```
 
 ### To/From Podman Rootless

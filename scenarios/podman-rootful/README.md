@@ -19,7 +19,7 @@ Deploys a GitLab Runner with **rootful Podman** as the container runtime. Provid
 
 ```hcl
 module "gitlab_runner" {
-  source = "schubergphilis/mcaf-gitlab-runner-autoscaler/aws//scenarios/podman-rootful"
+  source = "schubergphilis-ep/mcaf-gitlab-runner-autoscaler/aws//scenarios/podman-rootful"
 
   runner_name         = "my-runner"
   gitlab_url          = "https://gitlab.com"
