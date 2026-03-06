@@ -43,6 +43,7 @@ Deploys the GitLab Runner manager as an ECS Fargate task. The manager polls GitL
 | <a name="input_docker_credential_helpers"></a> [docker\_credential\_helpers](#input\_docker\_credential\_helpers) | Map of Docker registry hostnames to credential helper names, written to the manager's /root/.docker/config.json as credHelpers | `map(string)` | `{}` | no |
 | <a name="input_gitlab_runner_command"></a> [gitlab\_runner\_command](#input\_gitlab\_runner\_command) | Command to run the GitLab Runner | `list(string)` | <pre>[<br/>  "run"<br/>]</pre> | no |
 | <a name="input_gitlab_runner_image"></a> [gitlab\_runner\_image](#input\_gitlab\_runner\_image) | Container image for the GitLab Runner manager (should be pinned to a specific version or digest) | `string` | `"schubergphilis/gitlab-runner-autoscaler:v1.0.0"` | no |
+| <a name="input_iam_permissions_boundary"></a> [iam\_permissions\_boundary](#input\_iam\_permissions\_boundary) | ARN of the IAM permissions boundary to attach to the ECS task execution role created by the Fargate runner manager | `string` | `null` | no |
 | <a name="input_kms_key_id"></a> [kms\_key\_id](#input\_kms\_key\_id) | KMS key ID for encrypting Secrets Manager secrets and CloudWatch log groups. Strongly recommended: the GitLab runner token is stored in the Terraform state file as plaintext; ensure the state backend is encrypted and access-controlled. If not provided, uses AWS managed keys | `string` | `null` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | Map of tags to apply to all resources | `map(string)` | `{}` | no |
 
