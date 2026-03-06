@@ -52,12 +52,6 @@ variable "ebs_volume_type" {
   default     = null
 }
 
-variable "iam_permissions_boundary" {
-  description = "ARN of the IAM permissions boundary to attach to the ECS task execution role created by the Fargate runner manager"
-  type        = string
-  default     = null
-}
-
 variable "gitlab_runner_image" {
   type        = string
   description = "Container image for the GitLab Runner manager (should be pinned to a specific version or digest)"
@@ -73,6 +67,12 @@ variable "gitlab_runner_token" {
 variable "gitlab_url" {
   type        = string
   description = "GitLab instance URL (e.g., https://gitlab.com)"
+}
+
+variable "iam_permissions_boundary" {
+  description = "ARN of the IAM permissions boundary to attach to the ECS task execution role created by the Fargate runner manager"
+  type        = string
+  default     = null
 }
 
 variable "instance_types" {
