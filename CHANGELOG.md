@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.1](https://github.com/schubergphilis-ep/terraform-aws-mcaf-gitlab-runner-autoscaler/compare/v1.0.0...v1.0.1) (2026-03-06)
+
+
+### 🐛 Fixes
+
+* (docs) Update to correct terraform registry path in Readme's ([d471ccd](https://github.com/schubergphilis-ep/terraform-aws-mcaf-gitlab-runner-autoscaler/commit/d471ccd11f0c67ebe5449943f8b9c01c11cf3ff2))
+* Update to correct terraform registry path in Readme's ([#5](https://github.com/schubergphilis-ep/terraform-aws-mcaf-gitlab-runner-autoscaler/issues/5)) ([de1c500](https://github.com/schubergphilis-ep/terraform-aws-mcaf-gitlab-runner-autoscaler/commit/de1c500eb3e48607df530bc3575334b208720350))
+
 ## [1.0.0](https://github.com/schubergphilis-ep/terraform-aws-mcaf-gitlab-runner-autoscaler/compare/v0.1.0...v1.0.0) (2026-03-05)
 
 
