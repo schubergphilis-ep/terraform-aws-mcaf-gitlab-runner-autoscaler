@@ -55,7 +55,7 @@ Pick a [scenario](#scenarios), provide your GitLab token and VPC details, and ap
 
 ```hcl
 module "gitlab_runner" {
-  source = "schubergphilis/mcaf-gitlab-runner-autoscaler/aws//scenarios/docker"
+  source = "schubergphilis-ep/mcaf-gitlab-runner-autoscaler/aws//scenarios/docker"
 
   runner_name         = "my-runner"
   gitlab_url          = "https://gitlab.com"
@@ -120,7 +120,7 @@ To authenticate with private container registries, configure credential helpers:
 
 ```hcl
 module "gitlab_runner" {
-  source = "schubergphilis/mcaf-gitlab-runner-autoscaler/aws//scenarios/docker"
+  source = "schubergphilis-ep/mcaf-gitlab-runner-autoscaler/aws//scenarios/docker"
 
   # ...
 

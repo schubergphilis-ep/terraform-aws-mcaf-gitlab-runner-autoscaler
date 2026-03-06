@@ -19,7 +19,7 @@ Deploys a GitLab Runner with **Docker API compatibility** using Podman as the co
 
 ```hcl
 module "gitlab_runner" {
-  source = "schubergphilis/mcaf-gitlab-runner-autoscaler/aws//scenarios/docker"
+  source = "schubergphilis-ep/mcaf-gitlab-runner-autoscaler/aws//scenarios/docker"
 
   runner_name         = "my-runner"
   gitlab_url          = "https://gitlab.com"
