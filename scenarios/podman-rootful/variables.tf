@@ -69,6 +69,12 @@ variable "gitlab_url" {
   description = "GitLab instance URL (e.g., https://gitlab.com)"
 }
 
+variable "iam_permissions_boundary" {
+  description = "ARN of the IAM permissions boundary to attach to the ECS task execution role created by the Fargate runner manager"
+  type        = string
+  default     = null
+}
+
 variable "instance_types" {
   type        = list(string)
   description = "List of EC2 instance types to use (ordered by preference). If not specified, automatically discovers current-generation compute-optimized instances with instance storage for the selected architecture"

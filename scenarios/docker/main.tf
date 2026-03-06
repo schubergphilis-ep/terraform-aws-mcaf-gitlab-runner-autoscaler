@@ -31,6 +31,7 @@ module "manager" {
   gitlab_runner_config      = local.gitlab_runner_config
   gitlab_runner_image       = var.gitlab_runner_image
   gitlab_runner_token       = var.gitlab_runner_token
+  iam_permissions_boundary  = var.iam_permissions_boundary
   kms_key_id                = var.kms_key_id
   vpc_id                    = var.vpc_id
   vpc_subnet_ids            = var.vpc_subnet_ids

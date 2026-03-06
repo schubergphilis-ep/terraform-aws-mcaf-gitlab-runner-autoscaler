@@ -101,6 +101,7 @@ module "runner_manager" {
   ecs_subnet_ids           = var.vpc_subnet_ids
   image                    = var.gitlab_runner_image
   kms_key_id               = var.kms_key_id
+  permissions_boundary     = var.iam_permissions_boundary
   public_ip                = false
   readonly_root_filesystem = false
   role_policy              = data.aws_iam_policy_document.task_execution_role.json
