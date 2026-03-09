@@ -22,8 +22,6 @@ repos:
       - id: terraform_fmt
       - id: terraform_tflint
       - id: terraform_docs
-        args:
-          - --args=--config=.terraform-docs.yml
       - id: terraform_validate
   - repo: https://github.com/bridgecrewio/checkov.git
     rev: 3.2.388
