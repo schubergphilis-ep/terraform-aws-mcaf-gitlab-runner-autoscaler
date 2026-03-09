@@ -37,6 +37,3 @@ terraform.rc
 
 # Local Lambda function package directories
 **/builds/*
-
-# Claude Code
-.claude/
