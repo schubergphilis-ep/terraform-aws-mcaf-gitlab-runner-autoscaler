@@ -2,8 +2,10 @@ locals {
   gitlab_runner_config = {
     concurrent = var.concurrent_jobs
     runners = {
-      name = var.runner_name
-      url  = var.gitlab_url
+      name                   = var.runner_name
+      url                    = var.gitlab_url
+      pre_get_sources_script = var.runner_pre_get_sources_script
+      environment            = var.runner_environment
       docker = {
         host       = "unix:///run/podman/podman.sock"
         privileged = var.privileged_mode
@@ -42,6 +44,9 @@ module "ignition" {
   source = "../../modules/ignition/podman-rootful"
 
   os_auto_updates = var.os_auto_updates
+  http_proxy      = var.http_proxy
+  https_proxy     = var.https_proxy
+  no_proxy        = var.no_proxy
 }
 
 module "instance" {
@@ -59,5 +64,6 @@ module "instance" {
   user_data                        = base64encode(module.ignition.rendered)
   vpc_id                           = var.vpc_id
   vpc_subnet_ids                   = var.vpc_subnet_ids
+  egress_rules                     = var.egress_rules
   tags                             = var.tags
 }

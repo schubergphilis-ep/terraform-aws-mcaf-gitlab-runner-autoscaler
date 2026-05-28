@@ -41,7 +41,7 @@ See the [scenarios README](../README.md) for comparisons, autoscaling policy exa
 ## Requirements
 
 | Name | Version |
-|------|---------|
+| ---- | ------- |
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.10.0 |
 | <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 6.0 |
 | <a name="requirement_ignition"></a> [ignition](#requirement\_ignition) | >= 2.1 |
@@ -53,7 +53,7 @@ No providers.
 ## Modules
 
 | Name | Source | Version |
-|------|--------|---------|
+| ---- | ------ | ------- |
 | <a name="module_ignition"></a> [ignition](#module\_ignition) | ../../modules/ignition/podman-rootful | n/a |
 | <a name="module_instance"></a> [instance](#module\_instance) | ../../modules/instance | n/a |
 | <a name="module_manager"></a> [manager](#module\_manager) | ../../modules/manager | n/a |
@@ -65,12 +65,7 @@ No resources.
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:--------:|
-| <a name="input_gitlab_runner_token"></a> [gitlab\_runner\_token](#input\_gitlab\_runner\_token) | GitLab Runner registration token for authenticating the runner with GitLab | `string` | n/a | yes |
-| <a name="input_gitlab_url"></a> [gitlab\_url](#input\_gitlab\_url) | GitLab instance URL (e.g., https://gitlab.com) | `string` | n/a | yes |
-| <a name="input_runner_name"></a> [runner\_name](#input\_runner\_name) | Name prefix for the GitLab Runner and AWS resources | `string` | n/a | yes |
-| <a name="input_vpc_id"></a> [vpc\_id](#input\_vpc\_id) | VPC ID where the GitLab Runner infrastructure will be deployed | `string` | n/a | yes |
-| <a name="input_vpc_subnet_ids"></a> [vpc\_subnet\_ids](#input\_vpc\_subnet\_ids) | List of subnet IDs for deploying the manager and instances | `list(string)` | n/a | yes |
+| ---- | ----------- | ---- | ------- | :------: |
 | <a name="input_architecture"></a> [architecture](#input\_architecture) | CPU architecture for GitLab Runner (arm64 or x86\_64) | `string` | `"arm64"` | no |
 | <a name="input_autoscaler_policy"></a> [autoscaler\_policy](#input\_autoscaler\_policy) | Autoscaler idle policy configuration | <pre>list(object({<br/>    idle_count      = number<br/>    idle_time       = string<br/>    preemptive_mode = optional(bool, true)<br/>    periods         = optional(list(string), [])<br/>    timezone        = optional(string, "Europe/Amsterdam")<br/>  }))</pre> | <pre>[<br/>  {<br/>    "idle_count": 0,<br/>    "idle_time": "5m",<br/>    "periods": [<br/>      "* * * * *"<br/>    ]<br/>  }<br/>]</pre> | no |
 | <a name="input_capacity_per_instance"></a> [capacity\_per\_instance](#input\_capacity\_per\_instance) | Number of jobs each instance can handle concurrently | `number` | `1` | no |
@@ -78,21 +73,32 @@ No resources.
 | <a name="input_docker_credential_helpers"></a> [docker\_credential\_helpers](#input\_docker\_credential\_helpers) | Map of Docker registry hostnames to credential helper names, written to the manager's /root/.docker/config.json as credHelpers | `map(string)` | `{}` | no |
 | <a name="input_ebs_volume_size"></a> [ebs\_volume\_size](#input\_ebs\_volume\_size) | Size of the EBS root volume in GB. Defaults to 200 | `number` | `null` | no |
 | <a name="input_ebs_volume_type"></a> [ebs\_volume\_type](#input\_ebs\_volume\_type) | Type of EBS volume (gp3, gp2, io1, io2). Defaults to gp3 | `string` | `null` | no |
+| <a name="input_egress_rules"></a> [egress\_rules](#input\_egress\_rules) | Egress rules for the GitLab Runner instance security group | `any` | <pre>{<br/>  "all": {<br/>    "cidr_ipv4": [<br/>      "0.0.0.0/0"<br/>    ],<br/>    "description": "Allow all outbound traffic for CI/CD operations (GitLab API, container registries, package managers, AWS services)"<br/>  }<br/>}</pre> | no |
 | <a name="input_gitlab_runner_image"></a> [gitlab\_runner\_image](#input\_gitlab\_runner\_image) | Container image for the GitLab Runner manager (should be pinned to a specific version or digest) | `string` | `null` | no |
+| <a name="input_gitlab_runner_token"></a> [gitlab\_runner\_token](#input\_gitlab\_runner\_token) | GitLab Runner registration token for authenticating the runner with GitLab | `string` | n/a | yes |
+| <a name="input_gitlab_url"></a> [gitlab\_url](#input\_gitlab\_url) | GitLab instance URL (e.g., https://gitlab.com) | `string` | n/a | yes |
+| <a name="input_http_proxy"></a> [http\_proxy](#input\_http\_proxy) | HTTP proxy for Podman systemd service environment for use in air-gapped environments | `string` | `""` | no |
+| <a name="input_https_proxy"></a> [https\_proxy](#input\_https\_proxy) | HTTPS proxy for Podman systemd service environment for use in air-gapped environments | `string` | `""` | no |
 | <a name="input_iam_permissions_boundary"></a> [iam\_permissions\_boundary](#input\_iam\_permissions\_boundary) | ARN of the IAM permissions boundary to attach to the ECS task execution role created by the Fargate runner manager | `string` | `null` | no |
 | <a name="input_instance_types"></a> [instance\_types](#input\_instance\_types) | List of EC2 instance types to use (ordered by preference). If not specified, automatically discovers current-generation compute-optimized instances with instance storage for the selected architecture | `list(string)` | `null` | no |
 | <a name="input_kms_key_id"></a> [kms\_key\_id](#input\_kms\_key\_id) | KMS key ID for encrypting Secrets Manager secrets, CloudWatch log groups, and EBS volumes. Strongly recommended: the GitLab runner token is stored in the Terraform state file; ensure the state backend is encrypted and access-controlled | `string` | `null` | no |
 | <a name="input_max_instances"></a> [max\_instances](#input\_max\_instances) | Maximum number of instances the autoscaler can create | `number` | `5` | no |
+| <a name="input_no_proxy"></a> [no\_proxy](#input\_no\_proxy) | No-proxy list for Podman systemd service environment for use in air-gapped environments | `string` | `""` | no |
 | <a name="input_on_demand_base_capacity"></a> [on\_demand\_base\_capacity](#input\_on\_demand\_base\_capacity) | Absolute minimum number of on-demand instances. Defaults to 0 (all spot) | `number` | `null` | no |
 | <a name="input_on_demand_percentage_above_base"></a> [on\_demand\_percentage\_above\_base](#input\_on\_demand\_percentage\_above\_base) | Percentage of on-demand instances above base capacity (0-100). Defaults to 0 (100% spot) | `number` | `null` | no |
 | <a name="input_os_auto_updates"></a> [os\_auto\_updates](#input\_os\_auto\_updates) | OS auto-updater (Zincati) configuration for Fedora CoreOS instances. Set enabled=false to disable auto-updates entirely, or use strategy='periodic' with maintenance\_windows to control when updates are applied. | <pre>object({<br/>    enabled  = optional(bool, true)<br/>    strategy = optional(string, "immediate") # immediate or periodic<br/>    maintenance_windows = optional(list(object({<br/>      days           = list(string) # ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]<br/>      start_time     = string       # "22:00" (UTC)<br/>      length_minutes = number       # 60<br/>    })), [])<br/>  })</pre> | `{}` | no |
 | <a name="input_privileged_mode"></a> [privileged\_mode](#input\_privileged\_mode) | Enable Docker privileged mode for runners. Required for container-in-container builds. WARNING: grants near-complete host kernel access to job containers | `bool` | `true` | no |
+| <a name="input_runner_environment"></a> [runner\_environment](#input\_runner\_environment) | List of environment variables to set in the GitLab Runner manager container (e.g., for GitLab API access or custom credential helpers), in the form KEY=value | `list(string)` | `[]` | no |
+| <a name="input_runner_name"></a> [runner\_name](#input\_runner\_name) | Name prefix for the GitLab Runner and AWS resources | `string` | n/a | yes |
+| <a name="input_runner_pre_get_sources_script"></a> [runner\_pre\_get\_sources\_script](#input\_runner\_pre\_get\_sources\_script) | Optional script to run before the 'get sources' step of each job, for custom authentication to GitLab or other setup tasks. Should be idempotent and non-destructive, as it will run on every job execution | `string` | `""` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | Tags to apply to all resources | `map(string)` | `{}` | no |
+| <a name="input_vpc_id"></a> [vpc\_id](#input\_vpc\_id) | VPC ID where the GitLab Runner infrastructure will be deployed | `string` | n/a | yes |
+| <a name="input_vpc_subnet_ids"></a> [vpc\_subnet\_ids](#input\_vpc\_subnet\_ids) | List of subnet IDs for deploying the manager and instances | `list(string)` | n/a | yes |
 
 ## Outputs
 
 | Name | Description |
-|------|-------------|
+| ---- | ----------- |
 | <a name="output_instance_security_group_id"></a> [instance\_security\_group\_id](#output\_instance\_security\_group\_id) | Security group ID of the GitLab Runner instance |
 | <a name="output_manager_security_group_id"></a> [manager\_security\_group\_id](#output\_manager\_security\_group\_id) | Security group ID of the GitLab Runner manager |
 <!-- END_TF_DOCS -->

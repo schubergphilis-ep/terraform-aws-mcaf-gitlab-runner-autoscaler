@@ -173,12 +173,7 @@ module "security_group" {
   vpc_id      = var.vpc_id
   tags        = var.tags
 
-  egress_rules = {
-    all = {
-      cidr_ipv4   = ["0.0.0.0/0"]
-      description = "Allow all outbound traffic for CI/CD operations (GitLab API, container registries, package managers, AWS services)"
-    }
-  }
+  egress_rules = var.egress_rules
 
   ingress_rules = {
     ssh_from_manager = {
