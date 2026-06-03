@@ -54,12 +54,13 @@ variable "gitlab_runner_config" {
   type = object({
     concurrent = number
     runners = object({
-      name        = string
-      url         = string
-      shell       = optional(string, "sh")
-      environment = optional(list(string), ["CONTAINER_HOST=unix:///tmp/podman.sock", "DOCKER_HOST=unix:///tmp/podman.sock"])
-      executor    = optional(string, "docker-autoscaler")
-      builds_dir  = optional(string, "/var/builds")
+      name                   = string
+      url                    = string
+      pre_get_sources_script = optional(string, "")
+      shell                  = optional(string, "sh")
+      environment            = optional(list(string), ["CONTAINER_HOST=unix:///tmp/podman.sock", "DOCKER_HOST=unix:///tmp/podman.sock"])
+      executor               = optional(string, "docker-autoscaler")
+      builds_dir             = optional(string, "/var/builds")
       docker = object({
         host                         = optional(string, "unix:///run/podman/podman.sock")
         tls_verify                   = optional(bool, false)
@@ -164,4 +165,15 @@ variable "vpc_id" {
 variable "vpc_subnet_ids" {
   type        = list(string)
   description = "List of VPC subnet IDs where runner instances will be deployed"
+}
+
+variable "egress_rules" {
+  description = "Egress rules for the GitLab Runner instance security group"
+  type        = any
+  default = {
+    all = {
+      cidr_ipv4   = ["0.0.0.0/0"]
+      description = "Allow all outbound traffic for CI/CD operations (GitLab API, container registries, package managers, AWS services)"
+    }
+  }
 }

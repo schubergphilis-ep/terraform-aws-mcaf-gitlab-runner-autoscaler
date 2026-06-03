@@ -22,7 +22,6 @@ Please:
 ## ✅ Opening a Pull Request
 
 - **Commit style**: Use the [Conventional Commits specification](https://www.conventionalcommits.org/en/v1.0.0/). We only support the following types for release automation:
-
   - `feat`: for new features
   - `fix`: for bug fixes
   - `chore`: for non-functional changes (e.g., CI, docs, refactoring)
@@ -55,7 +54,6 @@ This repository uses [release-please](https://github.com/googleapis/release-plea
 ### How It Works
 
 1. When a pull request is merged into the default branch:
-
    - release-please **does not immediately publish a release**.
    - Instead, it creates or updates a **release PR** with:
      - A changelog entry (based on commit messages)

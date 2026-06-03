@@ -69,6 +69,18 @@ variable "gitlab_url" {
   description = "GitLab instance URL (e.g., https://gitlab.com)"
 }
 
+variable "runner_environment" {
+  type        = list(string)
+  description = "List of environment variables to set in the GitLab Runner manager container (e.g., for GitLab API access or custom credential helpers), in the form KEY=value"
+  default     = []
+}
+
+variable "runner_pre_get_sources_script" {
+  type        = string
+  description = "Optional script to run before the 'get sources' step of each job, for custom authentication to GitLab or other setup tasks. Should be idempotent and non-destructive, as it will run on every job execution"
+  default     = ""
+}
+
 variable "iam_permissions_boundary" {
   description = "ARN of the IAM permissions boundary to attach to the ECS task execution role created by the Fargate runner manager"
   type        = string
@@ -144,4 +156,33 @@ variable "vpc_id" {
 variable "vpc_subnet_ids" {
   type        = list(string)
   description = "List of subnet IDs for deploying the manager and instances"
+}
+
+variable "egress_rules" {
+  description = "Egress rules for the GitLab Runner instance security group"
+  type        = any
+  default = {
+    all = {
+      cidr_ipv4   = ["0.0.0.0/0"]
+      description = "Allow all outbound traffic for CI/CD operations (GitLab API, container registries, package managers, AWS services)"
+    }
+  }
+}
+
+variable "http_proxy" {
+  description = "HTTP proxy for Podman systemd service environment for use in air-gapped environments"
+  type        = string
+  default     = ""
+}
+
+variable "https_proxy" {
+  description = "HTTPS proxy for Podman systemd service environment for use in air-gapped environments"
+  type        = string
+  default     = ""
+}
+
+variable "no_proxy" {
+  description = "No-proxy list for Podman systemd service environment for use in air-gapped environments"
+  type        = string
+  default     = ""
 }

@@ -12,3 +12,20 @@ variable "os_auto_updates" {
   default     = {}
 }
 
+variable "http_proxy" {
+  description = "HTTP proxy for Podman systemd service environment for use in air-gapped environments"
+  type        = string
+  default     = ""
+}
+
+variable "https_proxy" {
+  description = "HTTPS proxy for Podman systemd service environment for use in air-gapped environments"
+  type        = string
+  default     = ""
+}
+
+variable "no_proxy" {
+  description = "No-proxy list for Podman systemd service environment for use in air-gapped environments"
+  type        = string
+  default     = ""
+}
