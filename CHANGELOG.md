@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0](https://github.com/schubergphilis-ep/terraform-aws-mcaf-gitlab-runner-autoscaler/compare/v1.1.0...v1.2.0) (2026-06-03)
+
+
+### 🚀 Features
+
+* Add support for air-gapped environments by adding egress proxy ([#9](https://github.com/schubergphilis-ep/terraform-aws-mcaf-gitlab-runner-autoscaler/issues/9)) ([eebe160](https://github.com/schubergphilis-ep/terraform-aws-mcaf-gitlab-runner-autoscaler/commit/eebe16030c8c6ed858df9878b0a99c1dc5348198))
+
 ## [1.1.0](https://github.com/schubergphilis-ep/terraform-aws-mcaf-gitlab-runner-autoscaler/compare/v1.0.1...v1.1.0) (2026-03-09)
 
 
