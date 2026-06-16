@@ -127,10 +127,11 @@ data "aws_ami" "default" {
 }
 
 resource "aws_launch_template" "default" {
-  name_prefix   = var.gitlab_runner_config.runners.name
-  image_id      = data.aws_ami.default.id
-  instance_type = local.instance_types[0] # Use first instance type as default
-  user_data     = var.user_data
+  name_prefix            = var.gitlab_runner_config.runners.name
+  image_id               = data.aws_ami.default.id
+  instance_type          = local.instance_types[0] # Use first instance type as default
+  user_data              = var.user_data
+  update_default_version = true
 
   block_device_mappings {
     device_name = "/dev/xvda"
