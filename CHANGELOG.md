@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.0](https://github.com/schubergphilis-ep/terraform-aws-mcaf-gitlab-runner-autoscaler/compare/v1.2.0...v2.0.0) (2026-06-16)
+
+
+### ⚠ BREAKING CHANGES
+
+* Set launch template update_default_version to true ([#12](https://github.com/schubergphilis-ep/terraform-aws-mcaf-gitlab-runner-autoscaler/issues/12))
+
+### 🐛 Fixes
+
+* Set launch template update_default_version to true ([#12](https://github.com/schubergphilis-ep/terraform-aws-mcaf-gitlab-runner-autoscaler/issues/12)) ([9046cce](https://github.com/schubergphilis-ep/terraform-aws-mcaf-gitlab-runner-autoscaler/commit/9046cce589ce16beeeeb2e96ef86b76a8add1ac5))
+
 ## [1.2.0](https://github.com/schubergphilis-ep/terraform-aws-mcaf-gitlab-runner-autoscaler/compare/v1.1.0...v1.2.0) (2026-06-03)
 
 
