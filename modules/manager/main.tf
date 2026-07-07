@@ -92,7 +92,7 @@ module "runner_manager" {
   #checkov:skip=CKV2_AWS_28:We dont use the lb
   #checkov:skip=CKV_AWS_91:We are not using the LB, so no access logs
 
-  source  = "schubergphilis/mcaf-fargate/aws"
+  source  = "schubergphilis-ep/mcaf-fargate/aws"
   version = "~> 2.2.0"
 
   name                     = "${var.gitlab_runner_config.runners.name}-manager"
