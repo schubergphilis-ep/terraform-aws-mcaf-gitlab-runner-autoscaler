@@ -20,7 +20,7 @@ Deploys the GitLab Runner manager as an ECS Fargate task. The manager polls GitL
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_runner_manager"></a> [runner\_manager](#module\_runner\_manager) | schubergphilis/mcaf-fargate/aws | ~> 2.2.0 |
+| <a name="module_runner_manager"></a> [runner\_manager](#module\_runner\_manager) | schubergphilis-ep/mcaf-fargate/aws | ~> 2.2.0 |
 
 ## Resources
 
