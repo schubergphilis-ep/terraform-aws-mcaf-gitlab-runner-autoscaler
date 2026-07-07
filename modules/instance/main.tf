@@ -166,7 +166,7 @@ resource "aws_launch_template" "default" {
 }
 
 module "security_group" {
-  source  = "schubergphilis/mcaf-security-group/aws"
+  source  = "schubergphilis-ep/mcaf-security-group/aws"
   version = "~> 2.0.0"
 
   name_prefix = var.gitlab_runner_config.runners.name
